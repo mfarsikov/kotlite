@@ -5,5 +5,5 @@ pluginManagement{
         jcenter()
     }
 }
-include("kotgres-kapt", "kotgres-core", "example")
-rootProject.name = "kotgres"
+include("kotlite-kapt", "kotlite-core", "sqlite-example")
+rootProject.name = "kotlite"

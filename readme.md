@@ -1,17 +1,17 @@
-# Kotgres[ql]
+# kotlite[ql]
 
 Not an ORM.
 
 Generates inspectable SQL queries before compile time rather than in runtime.
 
-`Kotgres = ORM - bullshit`
+`kotlite = ORM - bullshit`
 
 ## Quick start
 
 #### Gradle
 ```kotlin
 plugins {
-    kotlin("kapt")
+    kotlin("kapt") version "1.4.10"
     kotlin("plugin.serialization") // for serializing collections as JSON
 }
 
@@ -20,24 +20,24 @@ repositories {
 }
 
 dependencies {
-  implementation("com.github.mfarsikov:kotgres-core:0.1.0") // library containing annotations and classes used in compile time
+  implementation("com.github.mfarsikov:kotlite-core:0.1.0") // library containing annotations and classes used in compile time
 
-  kapt("com.github.mfarsikov:kotgres-kapt:0.1.0") // Kotlin annotation processor, generates repositories code before compilation
+  kapt("com.github.mfarsikov:kotlite-kapt:0.1.0") // Kotlin annotation processor, generates repositories code before compilation
 }
 
 kapt {
   arguments {
-    arg("kotgres.db.qualifiedName", "my.pack.DB") // default database class name
-    arg("kotgres.spring", "false") // marks database class as Spring's component
+    arg("kotlite.db.qualifiedName", "my.pack.DB") // default database class name
+    arg("kotlite.spring", "false") // marks database class as Spring's component
   }
 }
 ```
 
 #### Create entities and declare repositories
 ```kotlin
-import kotgres.annotations.Id
-import kotgres.annotations.PostgresRepository
-import kotgres.aux.Repository
+import kotlite.annotations.Id
+import kotlite.annotations.SqliteRepository
+import kotlite.aux.Repository
 
 data class Person(
   @Id
@@ -46,7 +46,7 @@ data class Person(
   val birthDate: LocalDate,
 )
 
-@PostgresRepository
+@SqliteRepository
 interface PersonRepository : Repository<Person> {
     fun save(person: Person)
     fun findBy(birthDate: LocalDate): List<Person>
@@ -131,7 +131,7 @@ val bornToday = db.transaction(readOnly = true) {
 ```
 ## Synopsis
 
-* Maps Kotlin classes to Postgres tables
+* Maps Kotlin classes to Sqlite tables
 * Generates SpringData-like repositories with
     * predefined query methods(`saveAll`, `deleteAll`, `findAll`)
     * custom query methods (like `findByLastName`)
@@ -140,11 +140,11 @@ val bornToday = db.transaction(readOnly = true) {
 * Code and queries are generated during build process, before compilation
 * Generated code is properly formatted and human-friendly
 * Explicit transaction management (DSL instead of annotations driven)
-* Postgres specific :elephant:
+* Sqlite specific :elephant:
 * Uses native SQL and JDBC
 * Uses immutable Kotlin data classes as 'entities'
 * Maps nested object's properties into a single table (like JPA `@Embeddable`)
-* Serializes Kotlin collections as JSONB type in postgres
+* Serializes Kotlin collections as JSONB type in sqlite
 * Generates schema validations
 
 Unlike popular ORM:
@@ -166,12 +166,12 @@ Unlike popular ORM:
 The intention was to make database interactions (queries and transactions) explicit.
 Generate boiler plate code (like trivial queries, and result mappings). 
 Give ability to write complex queries, and map their results automatically.
-Use full power of Postrgesql (such as JSON queries and full text search queries).
+Use full power of Sqlite.
 
 Avoid accidental complexity
 
 ## Documentation
-https://mfarsikov.github.io/kotgres/
+https://mfarsikov.github.io/kotlite/
 
 ## Example
 See `example` project
@@ -180,4 +180,4 @@ See `example` project
 
 `./gradlew example:test` runs real queries against DB in docker container (requires Docker)
 
-`./gradlew example:run` runs Main application in `example` project, requires running Postgres.
+`./gradlew example:run` runs Main application in `example` project, requires running Sqlite.

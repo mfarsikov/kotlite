@@ -1,4 +1,4 @@
-# Kotgres
+# kotlite
 
 1. [Conventions](#conventions) 
 2. [Standalone repositories](#standalone-repositories)
@@ -25,7 +25,7 @@ data class Person(
 )
 ```
 
-Kotgres generates queries based on method names in two cases:
+kotlite generates queries based on method names in two cases:
 * method name starts with `save`
 * method name starts with `delete`
 
@@ -50,11 +50,11 @@ set to requested entities.
 
 The simplest possible standalone interface is this:
 ```kotlin
-@PostgresRepository
+@SqliteRepository
 interface PersonRepository 
 ```
-It is useles, but Kotgres can generate implementation for it.
-For each interface marked as `@PostgresRepository` task `kaptKotlin` generates implementations in  
+It is useles, but kotlite can generate implementation for it.
+For each interface marked as `@SqliteRepository` task `kaptKotlin` generates implementations in  
 `build/generated/source/kapt/` folder.
 <details>
 <summary>Generated code</summary>
@@ -69,10 +69,10 @@ internal class PersonRepositoryImpl(
 
 ### Simplest query
 
-Next we can add a function, and since Kotgres does not have enough information to generate a SQL query 
+Next we can add a function, and since kotlite does not have enough information to generate a SQL query 
 each method in standalone repository should have manually written query:
 ```kotlin
-@PostgresRepository
+@SqliteRepository
 interface PersonRepository {
   @Query("SELECT id, name, birth_date FROM person")
   fun findPeople(): List<Person>
@@ -80,7 +80,7 @@ interface PersonRepository {
 ```
 Method name does not make sense, all information is taken from annotation, input parameter types (or absence of input parameters)
 and the return type.
-Kotgres knows that return type is a `List` so it expects multiple results.
+kotlite knows that return type is a `List` so it expects multiple results.
 Based on list type parameter `Person` it also knows which fields to extract from the `ResultSet`.
 
 <details>
@@ -432,7 +432,7 @@ Entity with ID additionally has:
 Entity can have more than one `@Id` field
 
 ### Repository declaration
-Each dedicated repository interface must be annotated with `@PostgresRepository` and extend `Repository`
+Each dedicated repository interface must be annotated with `@SqliteRepository` and extend `Repository`
 
 ### Query methods
 # TODO
@@ -542,14 +542,14 @@ It's fully qualified name is configured in `build.gradle.kts`:
 ```kotlin
 kapt {
   arguments {
-    arg("kotgres.db.qualifiedName", "my.pack.DB") 
+    arg("kotlite.db.qualifiedName", "my.pack.DB") 
   }
 }
 ```
 By default, all repositories are assigned to this database object, unless other is specified in 
-`@PostgresRepository` annotation:
+`@SqliteRepository` annotation:
 ```kotlin
-@PostgresRepository(belongsToDb = "my.another.DbObject")
+@SqliteRepository(belongsToDb = "my.another.DbObject")
 interface MyRepository : Repository<MyEntity>
 ```
 
@@ -559,7 +559,7 @@ DB objects could be marked as Spring components `build.gradle.kts`:
 ```kotlin
 kapt {
   arguments {
-    arg("kotgres.spring", "true")
+    arg("kotlite.spring", "true")
   }
 }
 ```
@@ -635,7 +635,7 @@ Checks for absent/extra fields, type/nullability mismatch, key fields/primary ke
 
 ## Type mappings
 
-| Kotlin type               |  Postgresql type              |
+| Kotlin type               |  Sqliteql type              |
 | ------------------------- | ----------------------------- |
 | java.math.BigDecimal      |  numeric                      |
 | kotlin.Boolean            |  boolean                      |

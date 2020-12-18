@@ -1,7 +1,7 @@
 ### Validation
 * detect name duplications in nested objects
 * detect names exceeding 63 symbols length 
-* postgres type aliases (text, varchar)
+* sqlite type aliases (text, varchar)
 * check types where it is possible
 * detect cycles
 * nested objects are not null
