@@ -267,7 +267,7 @@ private fun KlassFunction.toCustomQueryMethod(): QueryMethod {
 
     val inClauseParams = inClauseRegex.findAll(query).map { it.groupValues[1] }.toList()
 
-    query = inClauseParams.fold(query) { query, param -> query.replace(":$param", "%$param") }
+    query = inClauseParams.fold(query) { string, param -> string.replace(":$param", "%$param") }
 
     val queryParameters = queryParametersOrdered
         .filter { it.name !in inClauseParams }
@@ -529,9 +529,9 @@ private fun generateWhere(
             """.trimIndent()
         }
 
-    val inClauses = parameters.filterIndexed { i, it -> i in inIndices }
+    val inClauses = parameters.filterIndexed { i, _ -> i in inIndices }
 
-    val whereParameters = parameters.filterIndexed { i, it -> i !in inIndices }
+    val whereParameters = parameters.filterIndexed { i, _ -> i !in inIndices }
 
     val whereColumnsByParameters = whereParameters.associateWith {
         columnsByFieldName[it.name]
@@ -649,8 +649,8 @@ private fun generateWhere(
 
     val inClauseParamNames = inClauseRegex.findAll(whereClause).map { it.groupValues[1] }.toList()
 
-    whereClause = inClauseParamNames.fold(whereClause) { whereClause, paramName ->
-        whereClause.replace(
+    whereClause = inClauseParamNames.fold(whereClause) { clause, paramName ->
+        clause.replace(
             ":$paramName",
             "%$paramName"
         )

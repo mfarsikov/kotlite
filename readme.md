@@ -1,10 +1,10 @@
-# kotlite[ql]
+# Kotlite
 
 Not an ORM.
 
 Generates inspectable SQL queries before compile time rather than in runtime.
 
-`kotlite = ORM - bullshit`
+`Kotlite = ORM - bullshit`
 
 ## Quick start
 
@@ -176,8 +176,6 @@ https://mfarsikov.github.io/kotlite/
 ## Example
 See `example` project
 
-`./gradlew example:kaptKotlin` generates database classes in `example/build/generated/source/kapt/main`
+`./gradlew sqlite-example:kaptKotlin` generates database classes in `example/build/generated/source/kapt/main`
 
-`./gradlew example:test` runs real queries against DB in docker container (requires Docker)
-
-`./gradlew example:run` runs Main application in `example` project, requires running Sqlite.
+`./gradlew sqlite-example:test` runs real queries against DB in docker container (requires Docker)

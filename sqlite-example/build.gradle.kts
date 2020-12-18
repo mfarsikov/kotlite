@@ -28,7 +28,6 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.0")
     implementation(project(":kotlite-core"))
     implementation("org.xerial:sqlite-jdbc:3.34.0")
-    implementation("com.zaxxer:HikariCP:3.4.5")
     implementation("org.flywaydb:flyway-core:7.1.1")
 
     kapt(project(":kotlite-kapt"))

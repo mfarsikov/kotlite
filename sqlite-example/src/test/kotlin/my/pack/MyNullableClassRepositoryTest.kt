@@ -1,8 +1,5 @@
 package my.pack
 
-import kotlite.aux.sort.Order
-import kotlite.aux.sort.SortCol
-import kotlite.aux.sort.SortOrder
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test

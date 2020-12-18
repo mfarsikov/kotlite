@@ -1,7 +1,5 @@
 package my.pack
 
-import com.zaxxer.hikari.HikariConfig
-import com.zaxxer.hikari.HikariDataSource
 import org.flywaydb.core.Flyway
 import org.sqlite.SQLiteDataSource
 import java.io.File
@@ -10,18 +8,11 @@ import kotlin.reflect.full.isSubclassOf
 import kotlin.test.fail
 
 object TestUtil {
-    val ds: DataSource =
-
-        SQLiteDataSource().apply {
-            File("build/test/test.db").takeIf { it.exists() }?.delete()
-            File("build/test/").mkdir()
-            url = "jdbc:sqlite:build/test/test.db"
-        }
-
-//        HikariDataSource(HikariConfig().apply {
-//        File("build/test/").mkdir()
-//        jdbcUrl = "jdbc:sqlite:build/test/test.db"
-//    })
+    val ds: DataSource = SQLiteDataSource().apply {
+        File("build/test/test.db").takeIf { it.exists() }?.delete()
+        File("build/test/").mkdir()
+        url = "jdbc:sqlite:build/test/test.db"
+    }
 
     fun runMigrations() {
         Flyway.configure().dataSource(ds).load().migrate()

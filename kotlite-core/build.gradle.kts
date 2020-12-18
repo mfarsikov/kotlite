@@ -84,7 +84,7 @@ bintray {
     setPublications("bintray")
     isPublish = true
     with(pkg) {
-        repo = "kotlite"
+        repo = "Kotlite"
         name = "kotlite-core"
         userOrg = System.getenv("BINTRAY_USER")
         setLicenses("Apache-2.0")
