@@ -21,6 +21,7 @@ import io.github.enjoydambience.kotlinbard.addFunction
 import io.github.enjoydambience.kotlinbard.buildFile
 import io.github.enjoydambience.kotlinbard.controlFlow
 import io.github.enjoydambience.kotlinbard.nullable
+import kotlite.annotations.Generated
 import kotlite.kapt.model.klass.Klass
 import kotlite.kapt.model.klass.Nullability
 import kotlite.kapt.model.klass.Type
@@ -32,7 +33,6 @@ import kotlite.kapt.sqlite.repository.QueryMethodType
 import kotlite.kapt.sqlite.repository.QueryParameter
 import kotlite.kapt.sqlite.repository.Repo
 import kotlite.kapt.parser.KotlinType
-import javax.annotation.processing.Generated
 
 
 fun generateRepository(repo: Repo): FileSpec {

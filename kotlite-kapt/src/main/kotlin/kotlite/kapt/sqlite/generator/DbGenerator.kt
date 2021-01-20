@@ -15,11 +15,11 @@ import io.github.enjoydambience.kotlinbard.addFunction
 import io.github.enjoydambience.kotlinbard.buildFile
 import io.github.enjoydambience.kotlinbard.codeBlock
 import io.github.enjoydambience.kotlinbard.controlFlow
+import kotlite.annotations.Generated
 import kotlite.aux.DbOperations
 import kotlite.aux.DbOperationsImpl
 import kotlite.aux.IsolationLevel
 import kotlite.kapt.sqlite.repository.Repo
-import javax.annotation.processing.Generated
 
 fun generateDb(dbDescription: DbDescription): FileSpec {
     return buildFile(dbDescription.pkg, dbDescription.name + ".kt") {
