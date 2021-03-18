@@ -4,7 +4,7 @@ plugins {
     kotlin("jvm")
     kotlin("kapt")
     kotlin("plugin.serialization")
-    id("com.bnorm.power.kotlin-power-assert") version "0.5.3"
+    id("com.bnorm.power.kotlin-power-assert") version "0.7.0"
     idea
     application
 }
@@ -16,7 +16,7 @@ repositories {
 }
 
 application {
-    mainClassName = "my.pack.MainKt"
+    mainClass.set("my.pack.MainKt")
 }
 
 group = "com.example"
@@ -33,7 +33,7 @@ dependencies {
     kapt(project(":kotlite-kapt"))
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.7.0")
-    testImplementation("org.jetbrains.kotlin:kotlin-test:1.4.10")
+    testImplementation("org.jetbrains.kotlin:kotlin-test:1.4.31")
 }
 
 configure<com.bnorm.power.PowerAssertGradleExtension> {

@@ -3,7 +3,7 @@ plugins {
     kotlin("plugin.serialization")
     id("maven-publish")
     id("org.jetbrains.dokka")
-    id("com.bnorm.power.kotlin-power-assert") version "0.5.3"
+    id("com.bnorm.power.kotlin-power-assert") version "0.7.0"
 
     idea
     signing
@@ -15,11 +15,11 @@ repositories {
 
 dependencies {
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.4.10")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.4.31")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.7.0")
-    testImplementation("org.jetbrains.kotlin:kotlin-test:1.4.10")
+    testImplementation("org.jetbrains.kotlin:kotlin-test:1.4.31")
 }
 
 java {
