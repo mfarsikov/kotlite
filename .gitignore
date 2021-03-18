@@ -2,3 +2,6 @@
 .gradletasknamecache
 .idea
 build
+kotlite-core/out
+kotlite-kapt/out
+sqlite-example/out

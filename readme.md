@@ -140,7 +140,7 @@ val bornToday = db.transaction(readOnly = true) {
 * Code and queries are generated during build process, before compilation
 * Generated code is properly formatted and human-friendly
 * Explicit transaction management (DSL instead of annotations driven)
-* Sqlite specific :elephant:
+* Sqlite specific
 * Uses native SQL and JDBC
 * Uses immutable Kotlin data classes as 'entities'
 * Maps nested object's properties into a single table (like JPA `@Embeddable`)

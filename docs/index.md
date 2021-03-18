@@ -635,7 +635,7 @@ Checks for absent/extra fields, type/nullability mismatch, key fields/primary ke
 
 ## Type mappings
 
-| Kotlin type               |  Sqliteql type              |
+| Kotlin type               |  Sqlite type                  |
 | ------------------------- | ----------------------------- |
 | java.math.BigDecimal      |  numeric                      |
 | kotlin.Boolean            |  boolean                      |
