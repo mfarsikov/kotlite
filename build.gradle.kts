@@ -46,7 +46,6 @@ subprojects {
 nexusPublishing {
     repositories {
         sonatype {
-            this.stagingProfileId
             username.set(System.getenv("NEXUS_USERNAME"))
             password.set(System.getenv("NEXUS_PASSWORD"))
         }
