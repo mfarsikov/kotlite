@@ -2,13 +2,15 @@ plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
     id("maven-publish")
-    id("com.jfrog.bintray")
+    id("org.jetbrains.dokka")
     idea
+    signing
 }
 
 repositories {
     jcenter()
 }
+
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     withSourcesJar()
@@ -25,14 +27,22 @@ dependencies {
     implementation("com.squareup:kotlinpoet:1.7.2")
 }
 
+val dokkaJar by tasks.creating(Jar::class) {
+    group = JavaBasePlugin.DOCUMENTATION_GROUP
+    description = "Assembles Kotlin docs with Dokka"
+    this.archiveClassifier.set("javadoc")
+    from(tasks.named("dokkaJavadoc"))
+}
+
 publishing {
     publications {
-        create<MavenPublication>("bintray") {
+        create<MavenPublication>("maven") {
             groupId = project.group as String
             artifactId = project.name
             version = project.version.toString()
 
             from(components["java"])
+            artifact(dokkaJar)
 
             pom {
                 name.set("kotlite kapt")
@@ -60,23 +70,9 @@ publishing {
     }
 }
 
-bintray {
-    user = System.getenv("BINTRAY_USER")
-    key = System.getenv("BINTRAY_KEY")
-    setPublications("bintray")
-    isPublish = true
-    with(pkg) {
-        repo = "Kotlite"
-        name = "kotlite-kapt"
-        userOrg = System.getenv("BINTRAY_USER")
-        setLicenses("Apache-2.0")
-        vcsUrl = "https://github.com/mfarsikov/kotlite"
-        with(version) {
-            name = project.version.toString()
-            desc = "Kotlite Kotlin annotation processor"
-            //released = yyyy-MM-dd'T'HH:mm:ss.SSSZZ
-        }
-    }
+signing {
+    useInMemoryPgpKeys(System.getenv("GPG_KEY"), System.getenv("GPG_PASSWORD"))
+    sign(publishing.publications)
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
