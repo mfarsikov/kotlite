@@ -9,6 +9,9 @@ data class Page<T>(//TODO check it works from a jar, not from sources
 )
 
 data class Pageable(
+    /**
+     * Zero based page number
+     */
     val pageNumber: Int,
     val pageSize: Int,
 ){

@@ -1,5 +1,8 @@
 package kotlite.annotations
 
+/**
+ * Should be placed on interfaces, and for such interface KAPT will generate implementation
+ */
 @Target(AnnotationTarget.CLASS)
 annotation class SqliteRepository(
     /**

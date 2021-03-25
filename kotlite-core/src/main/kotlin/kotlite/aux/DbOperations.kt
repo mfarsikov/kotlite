@@ -5,6 +5,7 @@ import java.sql.Savepoint
 import java.util.concurrent.CompletableFuture
 
 interface DbOperations {
+    val connection: Connection
     fun commit()
     fun rollback()
     fun rollbackTo(savepoint: Savepoint)
@@ -12,7 +13,7 @@ interface DbOperations {
 }
 
 class DbOperationsImpl(
-    private val connection: Connection,
+    override val connection: Connection,
 ) : DbOperations {
 
     override fun commit() {

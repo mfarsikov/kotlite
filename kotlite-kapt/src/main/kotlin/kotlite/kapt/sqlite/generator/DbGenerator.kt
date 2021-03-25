@@ -74,7 +74,7 @@ fun generateDb(dbDescription: DbDescription): FileSpec {
         addClass("${dbDescription.name}RepositoryHolder") {
             addAnnotation(Generated::class)
             primaryConstructor(
-                PropertySpec.builder("connection", ClassName("java.sql", "Connection"), KModifier.PRIVATE).build()
+                PropertySpec.builder("connection", ClassName("java.sql", "Connection"), KModifier.OVERRIDE).build()
             )
             addSuperinterface(DbOperations::class, codeBlock("%T(connection)", DbOperationsImpl::class))
             dbDescription.repositories.forEach { repo ->
