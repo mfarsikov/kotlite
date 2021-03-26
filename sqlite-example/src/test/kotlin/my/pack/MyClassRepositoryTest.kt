@@ -721,4 +721,18 @@ class MyClassRepositoryTest {
 
         assert(actual == listOf(ProjectionOfMyClass(item.id, item.date, item.list)))
     }
+
+    @Test
+    fun `execute arbitrary statement`(){
+        //GIVEN
+        db.transaction { myClassRepository.save(item) }
+
+        //WHEN
+        db.transaction { execute("update my_class set name = 'item22'")}
+
+        //THEN
+        val updated = db.transaction { myClassRepository.findFirstByName("item22") }
+
+        assert(updated != null)
+    }
 }
