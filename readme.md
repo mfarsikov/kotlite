@@ -174,4 +174,4 @@ See `example` project
 
 `./gradlew sqlite-example:kaptKotlin` generates database classes in `example/build/generated/source/kapt/main`
 
-`./gradlew sqlite-example:test` runs real queries against DB in docker container (requires Docker)
+`./gradlew sqlite-example:test` runs real queries against Sqlite DB
