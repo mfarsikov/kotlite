@@ -1,3 +1,6 @@
+![Maven](https://img.shields.io/maven-central/v/com.github.mfarsikov/kotlite-kapt?style=flat-square&color=blue)
+<img src="misc/kotlin-logo.svg" alt="drawing" width="20"/>
+
 # Kotlite
 
 Not an ORM.
