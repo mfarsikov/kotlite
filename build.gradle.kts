@@ -1,6 +1,3 @@
-import com.github.mfarsikov.kewt.versioning.plugin.Incrementer.MINOR
-import com.github.mfarsikov.kewt.versioning.plugin.Incrementer.PATCH
-
 plugins {
     kotlin("jvm") version "1.4.32" apply false
     kotlin("plugin.serialization") version "1.4.32" apply false
@@ -13,28 +10,7 @@ repositories {
     mavenLocal()
     mavenCentral()
 }
-kewtVersioning {
-    configuration {
-        branches {
-            clear()
-            add {
-                regexes = mutableListOf("master".toRegex())
-                incrementer = MINOR
-                stringify = stringifier(useBranch = false, useSha = false, useTimestamp = false)
-            }
-            add {
-                regexes = mutableListOf("fix/.*".toRegex())
-                incrementer = PATCH
-                stringify = stringifier(useSha = false, useTimestamp = false)
-            }
-            add {
-                regexes = mutableListOf(".*".toRegex())
-                incrementer = MINOR
-                stringify = { version -> stringifier(useBranch = version.isSnapshot, useSha = false, useTimestamp = false)(version)}
-            }
-        }
-    }
-}
+
 val v = kewtVersioning.version
 version = v
 group = "com.github.mfarsikov"
