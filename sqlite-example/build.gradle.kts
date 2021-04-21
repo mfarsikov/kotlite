@@ -32,8 +32,8 @@ dependencies {
 
     kapt(project(":kotlite-kapt"))
 
-    testImplementation("org.junit.jupiter:junit-jupiter:5.7.0")
-    testImplementation("org.jetbrains.kotlin:kotlin-test:1.4.31")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.7.1")
+    testImplementation("org.jetbrains.kotlin:kotlin-test:1.4.32")
 }
 
 configure<com.bnorm.power.PowerAssertGradleExtension> {

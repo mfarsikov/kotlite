@@ -2,8 +2,8 @@ import com.github.mfarsikov.kewt.versioning.plugin.Incrementer.MINOR
 import com.github.mfarsikov.kewt.versioning.plugin.Incrementer.PATCH
 
 plugins {
-    kotlin("jvm") version "1.4.31" apply false
-    kotlin("plugin.serialization") version "1.4.31" apply false
+    kotlin("jvm") version "1.4.32" apply false
+    kotlin("plugin.serialization") version "1.4.32" apply false
     id("io.github.gradle-nexus.publish-plugin") version "1.0.0"
     id("com.github.mfarsikov.kewt-versioning") version "0.6.0"
     id("org.jetbrains.dokka") version "1.4.30" apply false
