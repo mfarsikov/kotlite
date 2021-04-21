@@ -1,4 +1,5 @@
 ![Maven](https://img.shields.io/maven-central/v/com.github.mfarsikov/kotlite-kapt?style=flat-square&color=blue)
+![Github](https://img.shields.io/github/workflow/status/mfarsikov/kotlite/master/master?label=tests)
 <img src="misc/kotlin-logo.svg" alt="drawing" width="20"/>
 
 # Kotlite

@@ -30,7 +30,7 @@ dependencies {
 val dokkaJar by tasks.creating(Jar::class) {
     group = JavaBasePlugin.DOCUMENTATION_GROUP
     description = "Assembles Kotlin docs with Dokka"
-    this.archiveClassifier.set("javadoc")
+    archiveClassifier.set("javadoc")
     from(tasks.named("dokkaJavadoc"))
 }
 
