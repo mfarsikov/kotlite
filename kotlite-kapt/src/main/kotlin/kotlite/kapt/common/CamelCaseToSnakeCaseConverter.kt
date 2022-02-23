@@ -7,16 +7,16 @@ val snakeRegex = "_[a-zA-Z]".toRegex()
 fun String.camelToSnakeCase(): String {
     return replace(camelRegex) {
         "_${it.value}"
-    }.toLowerCase()
+    }.lowercase()
 }
 
 fun String.snakeToLowerCamelCase(): String {
     return replace(snakeRegex) {
         it.value.replace("_","")
-            .toUpperCase()
+            .uppercase()
     }
 }
 
 fun String.snakeToUpperCamelCase(): String {
-    return this.snakeToLowerCamelCase().capitalize()
+    return this.snakeToLowerCamelCase().replaceFirstChar { it.uppercase() }
 }

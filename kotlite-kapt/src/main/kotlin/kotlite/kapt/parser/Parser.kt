@@ -121,7 +121,7 @@ class Parser(
                     parameters = func.valueParameters.map { param ->
                         FunctionParameter(
                             name = param.name,
-                            type = param.type!!.toType(),
+                            type = param.type.toType(),
                             isTarget = false,
                             annotations = funAnnotations?.paramAnnotations?.find { it.name == param.name }?.annotations
                                 ?: emptyList()
@@ -197,7 +197,7 @@ class Parser(
     private fun KmFunction.toFunctionSignature() = FunctionSignature(
         functionName = name,
         parameters = valueParameters.map {
-            it.type!!.toType().klass.name
+            it.type.toType().klass.name
         }
     )
 }
@@ -206,7 +206,6 @@ private fun readMetadata(metadata: Metadata): KotlinClassMetadata? = metadata.le
     KotlinClassHeader(
         it.kind,
         it.metadataVersion,
-        it.bytecodeVersion,
         it.data1,
         it.data2,
         it.extraString,

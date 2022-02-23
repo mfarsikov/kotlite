@@ -9,6 +9,7 @@ plugins {
 
 repositories {
     jcenter()
+    mavenCentral()
 }
 
 java {
@@ -18,13 +19,13 @@ java {
 
 dependencies {
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.4.32")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.6.10")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.2.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.4.0")
     implementation("io.github.enjoydambience:kotlinbard:0.4.0")
     implementation(project(":kotlite-core"))
 
-    implementation("com.squareup:kotlinpoet:1.7.2")
+    implementation("com.squareup:kotlinpoet:1.10.2")
 }
 
 val dokkaJar by tasks.creating(Jar::class) {

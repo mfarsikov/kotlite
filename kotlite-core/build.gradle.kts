@@ -3,7 +3,7 @@ plugins {
     kotlin("plugin.serialization")
     id("maven-publish")
     id("org.jetbrains.dokka")
-    id("com.bnorm.power.kotlin-power-assert") version "0.7.0"
+    id("com.bnorm.power.kotlin-power-assert") version "0.11.0"
 
     idea
     signing
@@ -11,15 +11,16 @@ plugins {
 
 repositories {
     jcenter()
+    mavenCentral()
 }
 
 dependencies {
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.4.32")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.6.10")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
-    testImplementation("org.junit.jupiter:junit-jupiter:5.7.1")
-    testImplementation("org.jetbrains.kotlin:kotlin-test:1.4.32")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
+    testImplementation("org.jetbrains.kotlin:kotlin-test:1.6.10")
 }
 
 java {
@@ -79,9 +80,6 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
         jvmTarget = "1.8"
-        if (name == "compileTestKotlin") {
-            useIR = true
-        }
     }
 }
 

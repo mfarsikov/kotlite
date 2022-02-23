@@ -39,7 +39,7 @@ class Processor : AbstractProcessor() {
 
         Logger.messager = processingEnv.messager
         processingEnv.options["kotlite.log.level"]
-            ?.also { Logger.logLevel = Logger.LogLevel.valueOf(it.toUpperCase()) }
+            ?.also { Logger.logLevel = Logger.LogLevel.valueOf(it.uppercase()) }
 
         spring = processingEnv.options["kotlite.spring"]
 

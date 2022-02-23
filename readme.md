@@ -15,7 +15,7 @@ Generates inspectable SQL queries before compile time rather than in runtime.
 #### Gradle
 ```kotlin
 plugins {
-    kotlin("kapt") version "1.4.32"
+    kotlin("kapt") version "1.6.10"
     kotlin("plugin.serialization") // for serializing collections as JSON
 }
 
@@ -25,9 +25,9 @@ repositories {
 }
 
 dependencies {
-  implementation("com.github.mfarsikov:kotlite-core:0.5.0") // library containing annotations and classes used in compile time
+  implementation("com.github.mfarsikov:kotlite-core:0.6.0") // library containing annotations and classes used in compile time
 
-  kapt("com.github.mfarsikov:kotlite-kapt:0.5.0") // Kotlin annotation processor, generates repositories code before compilation
+  kapt("com.github.mfarsikov:kotlite-kapt:0.6.0") // Kotlin annotation processor, generates repositories code before compilation
 }
 
 kapt {

@@ -80,7 +80,7 @@ fun generateDb(dbDescription: DbDescription): FileSpec {
             dbDescription.repositories.forEach { repo ->
                 addProperty(
                     PropertySpec.builder(
-                        repo.superKlass.name.name.decapitalize(),
+                        repo.superKlass.name.name.replaceFirstChar { it.lowercase() },
                         ClassName(repo.superKlass.name.pkg, repo.superKlass.name.name)
                     )
                         .initializer(
