@@ -1,9 +1,10 @@
 plugins {
-    kotlin("jvm") version "1.6.10" apply false
-    kotlin("plugin.serialization") version "1.6.10" apply false
-    id("io.github.gradle-nexus.publish-plugin") version "1.0.0"
+    id ("com.github.ben-manes.versions") version "0.42.0"
+    kotlin("jvm") version "1.7.0" apply false
+    kotlin("plugin.serialization") version "1.7.0" apply false
+    id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
     id("com.github.mfarsikov.kewt-versioning") version "1.0.0"
-    id("org.jetbrains.dokka") version "1.4.30" apply false
+    id("org.jetbrains.dokka") version "1.7.0" apply false
 }
 
 repositories {
