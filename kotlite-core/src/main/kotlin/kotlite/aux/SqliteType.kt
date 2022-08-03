@@ -26,7 +26,13 @@ enum class SqliteType(
 
     companion object {
         fun of(s: String): SqliteType {
-            return values().singleOrNull { it.value == s } ?: error("Cannot find Database Type: $s")
+            val name = if (s.startsWith(SqliteType::class.qualifiedName!!)) {
+                s.substringAfterLast(".")
+            }else{
+                s
+            }
+
+            return values().singleOrNull { it.name == name } ?: error("Cannot find Database Type: $s")
         }
     }
 }
