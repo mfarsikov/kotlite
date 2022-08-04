@@ -47,7 +47,7 @@ publishing {
             artifact(dokkaJar)
 
             pom {
-                name.set("kotlite kapt")
+                name.set("kotlite ksp")
                 description.set("Kotlin repository generator for Sqliteql")
                 url.set("https://github.com/mfarsikov/kotlite")
                 licenses {
