@@ -1,8 +1,8 @@
-package kotlite.kapt
+package kotlite.ksp
 
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.processing.SymbolProcessorProvider
-import kotlite.kapt.model.klass.QualifiedName
+import kotlite.ksp.model.klass.QualifiedName
 
 class KotliteSymbolProcessorProvider : SymbolProcessorProvider {
     override fun create(environment: SymbolProcessorEnvironment): KotliteSymbolProcessor {

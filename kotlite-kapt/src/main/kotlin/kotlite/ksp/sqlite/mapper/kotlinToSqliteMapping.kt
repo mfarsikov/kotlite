@@ -1,7 +1,7 @@
-package kotlite.kapt.mapper
+package kotlite.ksp.mapper
 
 import kotlite.aux.SqliteType
-import kotlite.kapt.parser.KotlinType
+import kotlite.ksp.parser.KotlinType
 
 val kotlinTypeToSqliteTypeMapping = mapOf(
     KotlinType.BIG_DECIMAL to SqliteType.NUMERIC,

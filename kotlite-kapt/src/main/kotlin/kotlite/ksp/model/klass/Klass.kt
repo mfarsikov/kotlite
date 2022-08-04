@@ -1,4 +1,4 @@
-package kotlite.kapt.model.klass
+package kotlite.ksp.model.klass
 
 sealed class Node
 data class QualifiedName(

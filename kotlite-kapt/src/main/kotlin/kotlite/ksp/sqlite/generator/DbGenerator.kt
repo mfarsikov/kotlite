@@ -1,4 +1,4 @@
-package kotlite.kapt.sqlite.generator
+package kotlite.ksp.sqlite.generator
 
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
@@ -6,7 +6,6 @@ import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.LambdaTypeName
 import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterSpec
-import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeVariableName
 import io.github.enjoydambience.kotlinbard.addClass
@@ -19,7 +18,7 @@ import kotlite.annotations.Generated
 import kotlite.aux.DbOperations
 import kotlite.aux.DbOperationsImpl
 import kotlite.aux.IsolationLevel
-import kotlite.kapt.sqlite.repository.Repo
+import kotlite.ksp.sqlite.repository.Repo
 
 fun generateDb(dbDescription: DbDescription): FileSpec {
     return buildFile(dbDescription.pkg, dbDescription.name + ".kt") {

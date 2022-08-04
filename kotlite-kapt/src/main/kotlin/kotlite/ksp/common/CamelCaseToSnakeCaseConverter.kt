@@ -1,4 +1,4 @@
-package kotlite.kapt.mapper
+package kotlite.ksp.mapper
 
 val camelRegex = "(?<=[a-zA-Z])[A-Z]".toRegex()
 val snakeRegex = "_[a-zA-Z]".toRegex()

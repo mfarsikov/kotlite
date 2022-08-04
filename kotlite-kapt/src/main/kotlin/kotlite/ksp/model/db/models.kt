@@ -1,9 +1,9 @@
-package kotlite.kapt.model.db
+package kotlite.ksp.model.db
 
 import kotlite.aux.ColumnDefinition
-import kotlite.kapt.model.klass.Klass
-import kotlite.kapt.model.klass.Type
-import kotlite.kapt.sqlite.repository.ObjectConstructor
+import kotlite.ksp.model.klass.Klass
+import kotlite.ksp.model.klass.Type
+import kotlite.ksp.sqlite.repository.ObjectConstructor
 
 data class TableMapping(
     val name: String,

@@ -1,7 +1,7 @@
-package kotlite.kapt.common
+package kotlite.ksp.common
 
-import kotlite.kapt.model.klass.KlassFunction
-import kotlite.kapt.model.klass.QualifiedName
+import kotlite.ksp.model.klass.KlassFunction
+import kotlite.ksp.model.klass.QualifiedName
 
 data class Pagination(
     val parameterName: String,

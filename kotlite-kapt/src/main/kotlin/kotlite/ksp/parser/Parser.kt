@@ -1,6 +1,6 @@
-package kotlite.kapt.parser
+package kotlite.ksp.parser
 
-import kotlite.kapt.model.klass.QualifiedName
+import kotlite.ksp.model.klass.QualifiedName
 
 private val typeDeclarationPattern = "^(([\\w\\.]*)\\.)?(\\w*)(<.*>)?".toRegex()
 fun String.toQualifiedName(): QualifiedName {

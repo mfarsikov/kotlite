@@ -1,4 +1,4 @@
-package kotlite.kapt.sqlite.generator
+package kotlite.ksp.sqlite.generator
 
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
@@ -22,17 +22,17 @@ import io.github.enjoydambience.kotlinbard.buildFile
 import io.github.enjoydambience.kotlinbard.controlFlow
 import io.github.enjoydambience.kotlinbard.nullable
 import kotlite.annotations.Generated
-import kotlite.kapt.model.klass.Klass
-import kotlite.kapt.model.klass.Nullability
-import kotlite.kapt.model.klass.Type
-import kotlite.kapt.model.klass.isJavaPrimitive
-import kotlite.kapt.model.klass.jdbcTypeMappingsForPrimitives
-import kotlite.kapt.sqlite.repository.ObjectConstructor
-import kotlite.kapt.sqlite.repository.QueryMethod
-import kotlite.kapt.sqlite.repository.QueryMethodType
-import kotlite.kapt.sqlite.repository.QueryParameter
-import kotlite.kapt.sqlite.repository.Repo
-import kotlite.kapt.parser.KotlinType
+import kotlite.ksp.model.klass.Klass
+import kotlite.ksp.model.klass.Nullability
+import kotlite.ksp.model.klass.Type
+import kotlite.ksp.model.klass.isJavaPrimitive
+import kotlite.ksp.model.klass.jdbcTypeMappingsForPrimitives
+import kotlite.ksp.sqlite.repository.ObjectConstructor
+import kotlite.ksp.sqlite.repository.QueryMethod
+import kotlite.ksp.sqlite.repository.QueryMethodType
+import kotlite.ksp.sqlite.repository.QueryParameter
+import kotlite.ksp.sqlite.repository.Repo
+import kotlite.ksp.parser.KotlinType
 
 
 fun generateRepository(repo: Repo): FileSpec {

@@ -1,6 +1,6 @@
-package kotlite.kapt
+package kotlite.ksp
 
-import kotlite.kapt.model.klass.QualifiedName
+import kotlite.ksp.model.klass.QualifiedName
 
 data class KotliteOptions(
     val dbQualifiedName: QualifiedName

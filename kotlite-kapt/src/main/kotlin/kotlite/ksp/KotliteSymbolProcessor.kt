@@ -1,4 +1,4 @@
-package kotlite.kapt
+package kotlite.ksp
 
 import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.Dependencies
@@ -6,13 +6,13 @@ import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.symbol.KSAnnotated
-import kotlite.kapt.mapper.toRepo
-import kotlite.kapt.mapper.validationErrors
-import kotlite.kapt.model.klass.Klass
-import kotlite.kapt.model.klass.QualifiedName
-import kotlite.kapt.sqlite.generator.DbDescription
-import kotlite.kapt.sqlite.generator.generateDb
-import kotlite.kapt.sqlite.generator.generateRepository
+import kotlite.ksp.mapper.toRepo
+import kotlite.ksp.mapper.validationErrors
+import kotlite.ksp.model.klass.Klass
+import kotlite.ksp.model.klass.QualifiedName
+import kotlite.ksp.sqlite.generator.DbDescription
+import kotlite.ksp.sqlite.generator.generateDb
+import kotlite.ksp.sqlite.generator.generateRepository
 
 class KotliteSymbolProcessor(
     val codeGenerator: CodeGenerator,

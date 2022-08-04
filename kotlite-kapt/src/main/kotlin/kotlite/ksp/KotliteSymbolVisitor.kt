@@ -1,4 +1,4 @@
-package kotlite.kapt
+package kotlite.ksp
 
 import com.google.devtools.ksp.getDeclaredFunctions
 import com.google.devtools.ksp.getDeclaredProperties
@@ -18,15 +18,15 @@ import com.google.devtools.ksp.symbol.KSTypeReference
 import com.google.devtools.ksp.symbol.KSValueParameter
 import com.google.devtools.ksp.symbol.Nullability
 import com.google.devtools.ksp.visitor.KSDefaultVisitor
-import kotlite.kapt.model.klass.AAnnotation
-import kotlite.kapt.model.klass.Field
-import kotlite.kapt.model.klass.FunctionParameter
-import kotlite.kapt.model.klass.Klass
-import kotlite.kapt.model.klass.KlassFunction
-import kotlite.kapt.model.klass.Node
-import kotlite.kapt.model.klass.QualifiedName
-import kotlite.kapt.model.klass.Type
-import kotlite.kapt.parser.KotlinType
+import kotlite.ksp.model.klass.AAnnotation
+import kotlite.ksp.model.klass.Field
+import kotlite.ksp.model.klass.FunctionParameter
+import kotlite.ksp.model.klass.Klass
+import kotlite.ksp.model.klass.KlassFunction
+import kotlite.ksp.model.klass.Node
+import kotlite.ksp.model.klass.QualifiedName
+import kotlite.ksp.model.klass.Type
+import kotlite.ksp.parser.KotlinType
 
 class KotliteSymbolVisitor(val logger: KSPLogger) : KSDefaultVisitor<Unit, Node?>(
 ) {
@@ -87,10 +87,10 @@ class KotliteSymbolVisitor(val logger: KSPLogger) : KSDefaultVisitor<Unit, Node?
         )
     }
 
-    private fun n(t: KSType): kotlite.kapt.model.klass.Nullability {
+    private fun n(t: KSType): kotlite.ksp.model.klass.Nullability {
         return when (t.nullability) {
-            Nullability.NULLABLE -> kotlite.kapt.model.klass.Nullability.NULLABLE
-            Nullability.NOT_NULL -> kotlite.kapt.model.klass.Nullability.NON_NULLABLE
+            Nullability.NULLABLE -> kotlite.ksp.model.klass.Nullability.NULLABLE
+            Nullability.NOT_NULL -> kotlite.ksp.model.klass.Nullability.NON_NULLABLE
             else -> throw Exception("platform type is not supported")
         }
     }

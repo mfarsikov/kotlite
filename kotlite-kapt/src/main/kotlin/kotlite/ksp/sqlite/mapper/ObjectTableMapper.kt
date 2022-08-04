@@ -1,4 +1,4 @@
-package kotlite.kapt.mapper
+package kotlite.ksp.mapper
 
 import kotlite.annotations.Column
 import kotlite.annotations.Delete
@@ -16,29 +16,29 @@ import kotlite.annotations.Version
 import kotlite.annotations.Where
 import kotlite.aux.ColumnDefinition
 import kotlite.aux.SqliteType
-import kotlite.kapt.common.KotliteException
-import kotlite.kapt.common.Pagination
-import kotlite.kapt.common.pageableQualifiedName
-import kotlite.kapt.common.paginationParameter
-import kotlite.kapt.model.db.ColumnMapping
-import kotlite.kapt.model.db.TableMapping
-import kotlite.kapt.model.klass.AAnnotation
-import kotlite.kapt.model.klass.Field
-import kotlite.kapt.model.klass.FunctionParameter
-import kotlite.kapt.model.klass.Klass
-import kotlite.kapt.model.klass.KlassFunction
-import kotlite.kapt.model.klass.Nullability
-import kotlite.kapt.model.klass.QualifiedName
-import kotlite.kapt.model.klass.Type
-import kotlite.kapt.model.klass.primitives
-import kotlite.kapt.sqlite.repository.ObjectConstructor
-import kotlite.kapt.sqlite.repository.QueryMethod
-import kotlite.kapt.sqlite.repository.QueryMethodParameter
-import kotlite.kapt.sqlite.repository.QueryMethodType
-import kotlite.kapt.sqlite.repository.QueryParameter
-import kotlite.kapt.sqlite.repository.Repo
-import kotlite.kapt.parser.KotlinType
-import kotlite.kapt.parser.toQualifiedName
+import kotlite.ksp.common.KotliteException
+import kotlite.ksp.common.Pagination
+import kotlite.ksp.common.pageableQualifiedName
+import kotlite.ksp.common.paginationParameter
+import kotlite.ksp.model.db.ColumnMapping
+import kotlite.ksp.model.db.TableMapping
+import kotlite.ksp.model.klass.AAnnotation
+import kotlite.ksp.model.klass.Field
+import kotlite.ksp.model.klass.FunctionParameter
+import kotlite.ksp.model.klass.Klass
+import kotlite.ksp.model.klass.KlassFunction
+import kotlite.ksp.model.klass.Nullability
+import kotlite.ksp.model.klass.QualifiedName
+import kotlite.ksp.model.klass.Type
+import kotlite.ksp.model.klass.primitives
+import kotlite.ksp.sqlite.repository.ObjectConstructor
+import kotlite.ksp.sqlite.repository.QueryMethod
+import kotlite.ksp.sqlite.repository.QueryMethodParameter
+import kotlite.ksp.sqlite.repository.QueryMethodType
+import kotlite.ksp.sqlite.repository.QueryParameter
+import kotlite.ksp.sqlite.repository.Repo
+import kotlite.ksp.parser.KotlinType
+import kotlite.ksp.parser.toQualifiedName
 
 // ex: `:firstName`
 val parameterPlaceholderRegex = Regex(":\\w*")

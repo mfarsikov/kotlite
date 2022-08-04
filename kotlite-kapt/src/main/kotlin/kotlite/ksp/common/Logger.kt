@@ -1,4 +1,4 @@
-package kotlite.kapt.common
+package kotlite.ksp.common
 
 import java.io.PrintWriter
 import java.io.StringWriter

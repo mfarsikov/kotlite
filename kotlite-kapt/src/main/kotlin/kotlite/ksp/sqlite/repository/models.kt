@@ -1,12 +1,12 @@
-package kotlite.kapt.sqlite.repository
+package kotlite.ksp.sqlite.repository
 
 import kotlite.aux.SqliteType
-import kotlite.kapt.common.Pagination
-import kotlite.kapt.model.db.TableMapping
-import kotlite.kapt.model.klass.Klass
-import kotlite.kapt.model.klass.QualifiedName
-import kotlite.kapt.model.klass.Type
-import kotlite.kapt.parser.KotlinType
+import kotlite.ksp.common.Pagination
+import kotlite.ksp.model.db.TableMapping
+import kotlite.ksp.model.klass.Klass
+import kotlite.ksp.model.klass.QualifiedName
+import kotlite.ksp.model.klass.Type
+import kotlite.ksp.parser.KotlinType
 
 data class Repo(
     val superKlass: Klass,
