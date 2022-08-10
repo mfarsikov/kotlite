@@ -4,7 +4,7 @@ plugins {
     kotlin("jvm")
     id("com.google.devtools.ksp") version "1.7.10-1.0.6"
     kotlin("plugin.serialization")
-    //id("com.bnorm.power.kotlin-power-assert") version "0.11.0"
+    id("com.bnorm.power.kotlin-power-assert") version "0.12.0"
     idea
     application
 }
@@ -37,9 +37,9 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-test:1.7.0")
 }
 
-//configure<com.bnorm.power.PowerAssertGradleExtension> {
-//    functions = listOf("kotlin.assert")
-//}
+configure<com.bnorm.power.PowerAssertGradleExtension> {
+    functions = listOf("kotlin.assert")
+}
 
 tasks.test {
     useJUnitPlatform()

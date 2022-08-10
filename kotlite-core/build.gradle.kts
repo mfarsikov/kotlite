@@ -3,7 +3,7 @@ plugins {
     kotlin("plugin.serialization")
     id("maven-publish")
     id("org.jetbrains.dokka")
-    //id("com.bnorm.power.kotlin-power-assert") version "0.11.0"
+    id("com.bnorm.power.kotlin-power-assert") version "0.12.0"
 
     idea
     signing
@@ -83,9 +83,9 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     }
 }
 
-//configure<com.bnorm.power.PowerAssertGradleExtension> {
-//    functions = listOf("kotlin.assert")
-//}
+configure<com.bnorm.power.PowerAssertGradleExtension> {
+    functions = listOf("kotlin.assert")
+}
 
 tasks.test {
     useJUnitPlatform()

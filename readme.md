@@ -15,7 +15,7 @@ Generates inspectable SQL queries before compile time rather than in runtime.
 #### Gradle
 ```kotlin
 plugins {
-    kotlin("kapt") version "1.6.10"
+    id("com.google.devtools.ksp") version "1.7.10-1.0.6"
     kotlin("plugin.serialization") // for serializing collections as JSON
 }
 
@@ -25,12 +25,12 @@ repositories {
 }
 
 dependencies {
-  implementation("com.github.mfarsikov:kotlite-core:0.6.0") // library containing annotations and classes used in compile time
+  implementation("com.github.mfarsikov:kotlite-core:0.9.0") // library containing annotations and classes used in compile time
 
-  kapt("com.github.mfarsikov:kotlite-kapt:0.6.0") // Kotlin annotation processor, generates repositories code before compilation
+  ksp("com.github.mfarsikov:kotlite-ksp:0.9.0") // Kotlin symbol processor, generates repositories code before compilation
 }
 
-kapt {
+ksp {
   arguments {
     arg("kotlite.db.qualifiedName", "my.pack.DB") // default database class name
     arg("kotlite.spring", "false") // marks database class as Spring's component
@@ -59,7 +59,7 @@ interface PersonRepository : Repository<Person> {
 
 ```
 #### Generate the code
-`./gradlew kaptKotlin` generates in the folder `build/generated/source/kapt` two classes:
+`./gradlew kspKotlin` generates in the folder `build/generated/ksp/main` two classes:
 `PersonRepositoryImpl` and `DB`
 <details>
 <summary>Generated code</summary>
@@ -181,6 +181,6 @@ https://mfarsikov.github.io/kotlite/
 ## Example
 See `example` project
 
-`./gradlew sqlite-example:kaptKotlin` generates database classes in `example/build/generated/source/kapt/main`
+`./gradlew sqlite-example:kspKotlin` generates database classes in `example/build/generated/ksp/main`
 
 `./gradlew sqlite-example:test` runs real queries against Sqlite DB
