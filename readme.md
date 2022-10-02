@@ -16,7 +16,7 @@ Generates inspectable SQL queries before compile time rather than in runtime.
 
 ```kotlin
 plugins {
-    id("com.google.devtools.ksp") version "1.7.10-1.0.6"
+    id("com.google.devtools.ksp") version "1.7.20-1.0.6"
     kotlin("plugin.serialization") // for serializing collections as JSON
 }
 
