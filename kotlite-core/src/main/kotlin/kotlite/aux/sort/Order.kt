@@ -1,12 +1,12 @@
 package kotlite.aux.sort
 
 data class Order(
-    val by: List<SortCol>
+    val by: List<SortCol>,
 ) {
     fun stringify(): String {
         val invalid = by.filterNot { it.isValid() }
 
-        if (invalid.isNotEmpty()) throw Exception("Invalid field names: $invalid") //TODO use custom exception
+        if (invalid.isNotEmpty()) throw Exception("Invalid field names: $invalid") // TODO use custom exception
 
         if (by.isEmpty()) return ""
 

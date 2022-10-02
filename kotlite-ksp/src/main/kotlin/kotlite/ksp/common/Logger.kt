@@ -27,13 +27,15 @@ class Logger {
         }
 
         fun error(ex: Throwable, s: String) {
-
             val exception = ex.message + " " +
-                    StringWriter().also {
-                        ex.printStackTrace(PrintWriter(it))
-                    }.toString() + "\r"
+                StringWriter().also {
+                    ex.printStackTrace(PrintWriter(it))
+                }.toString() + "\r"
 
-            if (logLevel.ordinal <= LogLevel.ERROR.ordinal) messager.printMessage(Diagnostic.Kind.ERROR, "$s\r$exception")
+            if (logLevel.ordinal <= LogLevel.ERROR.ordinal) messager.printMessage(
+                Diagnostic.Kind.ERROR,
+                "$s\r$exception",
+            )
         }
     }
 

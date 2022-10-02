@@ -1,11 +1,11 @@
 package my.pack
 
-import org.flywaydb.core.Flyway
-import org.sqlite.SQLiteDataSource
 import java.io.File
 import javax.sql.DataSource
 import kotlin.reflect.full.isSubclassOf
 import kotlin.test.fail
+import org.flywaydb.core.Flyway
+import org.sqlite.SQLiteDataSource
 
 object TestUtil {
     val ds: DataSource = SQLiteDataSource().apply {
@@ -32,7 +32,6 @@ inline fun <reified E : Throwable> expect(block: () -> Any?): E {
 }
 
 fun all(vararg r: () -> Unit) {
-
     val exs = r.mapNotNull {
         try {
             it()
@@ -41,6 +40,7 @@ fun all(vararg r: () -> Unit) {
             ex.message
         }
     }
-    if (exs.isNotEmpty())
+    if (exs.isNotEmpty()) {
         throw AssertionError(exs.joinToString(separator = "\n\n"))
+    }
 }

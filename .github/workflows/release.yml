@@ -7,25 +7,25 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/cache@v2
-      with:
-        path: ~/.gradle/caches
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
-        restore-keys: |
-          ${{ runner.os }}-gradle-
-    - uses: actions/cache@v2
-      with:
-        path: ~/.gradle/wrapper/dists
-        key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('**/*.gradle*') }}
-        restore-keys: |
-          ${{ runner.os }}-gradle-wrapper-
-    - name: Check
-      run: ./gradlew check
-    - name: Publish to sonatype nexus
-      env:
-        GPG_KEY: ${{ secrets.GPG_KEY }}
-        GPG_PASSWORD: ${{ secrets.GPG_PASSWORD }}
-        NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-        NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-      run: ./gradlew publishToSonatype
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      - uses: actions/cache@v2
+        with:
+          path: ~/.gradle/wrapper/dists
+          key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-wrapper-
+      - name: Check
+        run: ./gradlew check
+      - name: Publish to sonatype nexus
+        env:
+          GPG_KEY: ${{ secrets.GPG_KEY }}
+          GPG_PASSWORD: ${{ secrets.GPG_PASSWORD }}
+          NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+          NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+        run: ./gradlew publishToSonatype

@@ -28,7 +28,7 @@ data class Field(
 data class Type(
     val klass: Klass,
     val nullability: Nullability = Nullability.NON_NULLABLE,
-    val typeParameters: List<Type> = emptyList()
+    val typeParameters: List<Type> = emptyList(),
 ) : Node() {
     override fun toString() = "${qualifiedName()}${params()}${nullableSign()}"
 
@@ -57,11 +57,11 @@ data class KlassFunction(
 data class AAnnotation(
     val name: String,
     val parameters: Map<String, String>,
-): Node()
+) : Node()
 
 data class FunctionSignature(
     val functionName: String,
-    val parameters: List<QualifiedName>
+    val parameters: List<QualifiedName>,
 )
 
 data class FunctionParameter(
@@ -83,4 +83,3 @@ enum class Nullability {
         override fun toString() = ""
     }
 }
-

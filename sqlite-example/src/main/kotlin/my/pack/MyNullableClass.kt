@@ -1,15 +1,18 @@
 package my.pack
 
-import kotlite.annotations.*
-import kotlite.aux.Repository
 import java.sql.Date
 import java.sql.Timestamp
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
-import java.util.*
+import java.util.UUID
+import kotlite.annotations.Id
+import kotlite.annotations.Query
+import kotlite.annotations.SqliteRepository
+import kotlite.annotations.Where
+import kotlite.aux.Repository
 
-//@Table("") todo uncomment and fix error if there is no schema
+// @Table("") todo uncomment and fix error if there is no schema
 data class MyNullableClass(
     @Id
     val id: String,
@@ -26,7 +29,6 @@ data class MyNullableClass(
     val list: List<String>,
     val enum: Mode?,
 )
-
 
 data class MyNullableNestedClass(
     val proc: String?,

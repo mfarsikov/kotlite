@@ -1,6 +1,5 @@
 package kotlite.aux.sort
 
-
 private val allowedNameRegex = """([a-zA-Z_0-9]+)|("[a-zA-Z_0-9 ]+")""".toRegex()
 
 data class SortCol(

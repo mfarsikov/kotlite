@@ -5,11 +5,11 @@ import kotlite.aux.SqliteType
 fun Klass.isJavaPrimitive() = name in primitives
 
 val primitives = listOf(
-    QualifiedName("kotlin","Int" ),
-    QualifiedName("kotlin","Long" ),
-    QualifiedName("kotlin","Float" ),
-    QualifiedName("kotlin","Double" ),
-    QualifiedName("kotlin","Boolean" ),
+    QualifiedName("kotlin", "Int"),
+    QualifiedName("kotlin", "Long"),
+    QualifiedName("kotlin", "Float"),
+    QualifiedName("kotlin", "Double"),
+    QualifiedName("kotlin", "Boolean"),
 )
 
 val jdbcTypeMappingsForPrimitives = mapOf(

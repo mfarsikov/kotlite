@@ -1,5 +1,5 @@
-pluginManagement{
-    repositories{
+pluginManagement {
+    repositories {
         gradlePluginPortal()
         mavenLocal()
         jcenter()

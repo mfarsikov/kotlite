@@ -1,10 +1,10 @@
 package my.pack
 
+import java.util.UUID
 import kotlite.aux.exception.OptimisticLockFailException
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
-import java.util.*
 
 internal class OptimisticallyLockedItemTest {
     companion object {

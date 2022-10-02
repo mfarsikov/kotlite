@@ -12,38 +12,36 @@ import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import io.github.enjoydambience.kotlinbard.CodeBlockBuilder
 import io.github.enjoydambience.kotlinbard.TypeSpecBuilder
-import io.github.enjoydambience.kotlinbard.`for`
-import io.github.enjoydambience.kotlinbard.`if`
-import io.github.enjoydambience.kotlinbard.`while`
 import io.github.enjoydambience.kotlinbard.addClass
 import io.github.enjoydambience.kotlinbard.addCode
 import io.github.enjoydambience.kotlinbard.addFunction
 import io.github.enjoydambience.kotlinbard.buildFile
 import io.github.enjoydambience.kotlinbard.controlFlow
+import io.github.enjoydambience.kotlinbard.`for`
+import io.github.enjoydambience.kotlinbard.`if`
 import io.github.enjoydambience.kotlinbard.nullable
+import io.github.enjoydambience.kotlinbard.`while`
 import kotlite.annotations.Generated
 import kotlite.ksp.model.klass.Klass
 import kotlite.ksp.model.klass.Nullability
 import kotlite.ksp.model.klass.Type
 import kotlite.ksp.model.klass.isJavaPrimitive
 import kotlite.ksp.model.klass.jdbcTypeMappingsForPrimitives
+import kotlite.ksp.parser.KotlinType
 import kotlite.ksp.sqlite.repository.ObjectConstructor
 import kotlite.ksp.sqlite.repository.QueryMethod
 import kotlite.ksp.sqlite.repository.QueryMethodType
 import kotlite.ksp.sqlite.repository.QueryParameter
 import kotlite.ksp.sqlite.repository.Repo
-import kotlite.ksp.parser.KotlinType
-
 
 fun generateRepository(repo: Repo): FileSpec {
     return buildFile(repo.superKlass.name.pkg, "${repo.superKlass.name.name}Impl.kt") {
-
         addClass("${repo.superKlass.name.name}Impl") {
             addAnnotation(Generated::class)
             addModifiers(KModifier.INTERNAL)
             addSuperinterface(ClassName(repo.superKlass.name.pkg, repo.superKlass.name.name))
             primaryConstructor(
-                PropertySpec.builder("connection", ClassName("java.sql", "Connection"), KModifier.PRIVATE).build()
+                PropertySpec.builder("connection", ClassName("java.sql", "Connection"), KModifier.PRIVATE).build(),
             )
 
             repo.queryMethods
@@ -63,24 +61,26 @@ private fun TypeSpecBuilder.generateQueryMethod(
     addFunction(queryMethod.name) {
         addModifiers(KModifier.OVERRIDE)
         returns(queryMethod.returnType.toTypeName())
-        addParameters(queryMethod.queryMethodParameters.map { param ->
-            ParameterSpec(
-                name = param.name,
-                type = param.type.toTypeName()
-            )
-        })
+        addParameters(
+            queryMethod.queryMethodParameters.map { param ->
+                ParameterSpec(
+                    name = param.name,
+                    type = param.type.toTypeName(),
+                )
+            },
+        )
 
         addCode {
             addStatement("val query = %S", queryMethod.query)
 
             indent()
-            if (queryMethod.orderParameterName != null)
+            if (queryMethod.orderParameterName != null) {
                 addStatement(
                     ".replace(%S, %L.stringify())",
                     "%orderBy",
-                    queryMethod.orderParameterName
+                    queryMethod.orderParameterName,
                 )
-
+            }
 
             queryMethod.queryParameters.filter { it.isINClause }
                 .forEach {
@@ -91,17 +91,20 @@ private fun TypeSpecBuilder.generateQueryMethod(
                             it.path,
                             MemberName("kotlite.aux", "quote"),
                         )
+
                         KotlinType.INT, KotlinType.FLOAT, KotlinType.BIG_DECIMAL -> addStatement(
                             ".replace(%S, %L.joinToString())",
                             "%${it.path}",
                             it.path,
                         )
+
                         KotlinType.UUID, KotlinType.LOCAL_DATE_TIME, KotlinType.LOCAL_DATE, KotlinType.LOCAL_TIME -> addStatement(
                             ".replace(%S, %L.joinToString { it.toString().%M() })",
                             "%${it.path}",
                             it.path,
                             MemberName("kotlite.aux", "quote"),
                         )
+
                         KotlinType.DATE, KotlinType.TIMESTAMP -> addStatement(
                             ".replace(%S, %L.joinToString { it.time.toString() })",
                             "%${it.path}",
@@ -114,15 +117,15 @@ private fun TypeSpecBuilder.generateQueryMethod(
             unindent()
 
             controlFlow("return connection.prepareStatement(query).use") {
-
                 generateParametersSetBlock(queryMethod.queryParameters.filter { !it.isINClause }, "")
 
                 if (queryMethod.returnType.klass.name != KotlinType.UNIT.qn) {
                     controlFlow("it.executeQuery().use") {
-                        if (queryMethod.returnsCollection || queryMethod.pagination != null)
+                        if (queryMethod.returnsCollection || queryMethod.pagination != null) {
                             generateCollectionExtractor(queryMethod)
-                        else
+                        } else {
                             generateSingleElementExtractor(queryMethod)
+                        }
                     }
                 } else {
                     when {
@@ -131,10 +134,11 @@ private fun TypeSpecBuilder.generateQueryMethod(
                             `if`("rows != 1") {
                                 addStatement(
                                     "throw %M()",
-                                    MemberName("kotlite.aux.exception", "OptimisticLockFailException")
+                                    MemberName("kotlite.aux.exception", "OptimisticLockFailException"),
                                 )
                             }
                         }
+
                         queryMethod.isStatement -> addStatement("it.execute()")
                         else -> addStatement("it.executeUpdate()")
                     }
@@ -163,8 +167,8 @@ private fun CodeBlockBuilder.generateCollectionExtractor(queryMethod: QueryMetho
     if (queryMethod.pagination != null) {
         addStatement(
             "Page(%L, acc)",
-            queryMethod.pagination.parameterName
-        )//TODO use correct parameter name
+            queryMethod.pagination.parameterName,
+        ) // TODO use correct parameter name
     } else {
         addStatement("acc")
     }
@@ -174,7 +178,6 @@ private fun CodeBlockBuilder.generateSingleElementExtractor(
     queryMethod: QueryMethod,
 ) {
     `if`("it.next()") {
-
         addStatement("val result =")
         indent()
         if (queryMethod.returnsScalar) {
@@ -188,16 +191,17 @@ private fun CodeBlockBuilder.generateSingleElementExtractor(
                 addStatement(
                     "throw %T(%S)",
                     IllegalStateException::class,
-                    "Query has returned more than one element"
+                    "Query has returned more than one element",
                 )
             }
         }
         addStatement("result")
     } `else` {
-        if (queryMethod.returnType.nullability == Nullability.NULLABLE)
+        if (queryMethod.returnType.nullability == Nullability.NULLABLE) {
             addStatement("null")
-        else
+        } else {
             addStatement("throw %T()", NoSuchElementException::class)
+        }
     }
 }
 
@@ -208,6 +212,7 @@ private fun CodeBlockBuilder.generateScalarExtraction(extractor: ObjectConstruct
             MemberName("kotlinx.serialization.json", "Json"),
             MemberName("kotlinx.serialization", "decodeFromString"),
         )
+
         extractor.isJson && !extractor.isNullable -> addStatement(
             "%M.%M(it.getString(1))",
             MemberName("kotlinx.serialization.json", "Json"),
@@ -217,27 +222,29 @@ private fun CodeBlockBuilder.generateScalarExtraction(extractor: ObjectConstruct
         extractor.resultSetGetterName == "Object" && extractor.isNullable -> when (extractor.kotlinType) {
             KotlinType.LOCAL_DATE, KotlinType.LOCAL_TIME, KotlinType.LOCAL_DATE_TIME -> addStatement(
                 "it.getString(1)?.let { %M.parse(it) }",
-                MemberName(extractor.fieldType.pkg, extractor.fieldType.name)
+                MemberName(extractor.fieldType.pkg, extractor.fieldType.name),
             )
 
             KotlinType.UUID ->
                 addStatement(
                     "it.getString(1)?.let { %M.fromString() }",
-                    MemberName(extractor.fieldType.pkg, extractor.fieldType.name)
+                    MemberName(extractor.fieldType.pkg, extractor.fieldType.name),
                 )
+
             else -> error("unexpected type: ${extractor.kotlinType}")
         }
 
         extractor.resultSetGetterName == "Object" && !extractor.isNullable -> when (extractor.kotlinType) {
             KotlinType.LOCAL_DATE, KotlinType.LOCAL_TIME, KotlinType.LOCAL_DATE_TIME -> addStatement(
                 "%M.parse(it.getString(1))",
-                MemberName(extractor.fieldType.pkg, extractor.fieldType.name)
+                MemberName(extractor.fieldType.pkg, extractor.fieldType.name),
             )
 
             KotlinType.UUID -> addStatement(
                 "%M.fromString(it.getString(1))",
-                MemberName(extractor.fieldType.pkg, extractor.fieldType.name)
+                MemberName(extractor.fieldType.pkg, extractor.fieldType.name),
             )
+
             else -> error("unexpected type: ${extractor.kotlinType}")
         }
 
@@ -251,13 +258,12 @@ private fun CodeBlockBuilder.generateScalarExtraction(extractor: ObjectConstruct
             MemberName(extractor.fieldType.pkg, extractor.fieldType.name),
         )
 
-
         extractor.isNullable && extractor.isPrimitive -> addStatement(
-            "it.get${extractor.resultSetGetterName}(1).takeIf { _ -> !it.wasNull() }"
+            "it.get${extractor.resultSetGetterName}(1).takeIf { _ -> !it.wasNull() }",
         )
 
         else -> addStatement(
-            "it.get${extractor.resultSetGetterName}(1)"
+            "it.get${extractor.resultSetGetterName}(1)",
         )
     }
 }
@@ -265,7 +271,6 @@ private fun CodeBlockBuilder.generateScalarExtraction(extractor: ObjectConstruct
 fun Klass.toClassName() = ClassName(name.pkg, name.name)
 
 fun Type.toTypeName(): TypeName {
-
     var cn = klass.toClassName()
     if (nullability == Nullability.NULLABLE) cn = cn.nullable
 
@@ -292,6 +297,7 @@ private fun CodeBlockBuilder.generateConstructorCall(c: ObjectConstructor, isTop
             val trailingComma = if (isTop) "" else ","
             addStatement(")$trailingComma")
         }
+
         is ObjectConstructor.Extractor -> {
             when {
                 c.isJson -> addStatement(
@@ -302,37 +308,41 @@ private fun CodeBlockBuilder.generateConstructorCall(c: ObjectConstructor, isTop
                     c.columnName,
                 )
 
-                c.resultSetGetterName == "Object" -> when (c.kotlinType) {//TODO nullable
+                c.resultSetGetterName == "Object" -> when (c.kotlinType) { // TODO nullable
                     KotlinType.LOCAL_DATE, KotlinType.LOCAL_DATE_TIME, KotlinType.LOCAL_TIME ->
-                        if (c.isNullable)
+                        if (c.isNullable) {
                             addStatement(
                                 "%L = it.getString(%S)?.let { %M.parse(it) },",
                                 c.fieldName,
                                 c.columnName,
                                 MemberName(c.fieldType.pkg, c.fieldType.name),
                             )
-                        else
+                        } else {
                             addStatement(
                                 "%L = %M.parse(it.getString(%S)),",
                                 c.fieldName,
                                 MemberName(c.fieldType.pkg, c.fieldType.name),
                                 c.columnName,
                             )
+                        }
+
                     KotlinType.UUID ->
-                        if (c.isNullable)
+                        if (c.isNullable) {
                             addStatement(
                                 "%L = it.getString(%S)?.let { %M.fromString(it) },",
                                 c.fieldName,
                                 c.columnName,
                                 MemberName(c.fieldType.pkg, c.fieldType.name),
                             )
-                        else
+                        } else {
                             addStatement(
                                 "%L = %M.fromString(it.getString(%S)),",
                                 c.fieldName,
                                 MemberName(c.fieldType.pkg, c.fieldType.name),
                                 c.columnName,
                             )
+                        }
+
                     else -> error("unexpected kotlin type: ${c.kotlinType}")
                 }
 
@@ -376,15 +386,13 @@ private fun TypeSpecBuilder.generateBatchQueryMethod(queryMethod: QueryMethod) {
 
         val queryMethodParameter = queryMethod.queryMethodParameters.single()
         addParameter(
-            ParameterSpec(queryMethodParameter.name, queryMethodParameter.type.toTypeName())
+            ParameterSpec(queryMethodParameter.name, queryMethodParameter.type.toTypeName()),
         )
-
 
         addCode {
             addStatement("val query = %S", queryMethod.query)
             controlFlow("connection.prepareStatement(query).use") {
                 `for`("item in ${queryMethodParameter.name}") {
-
                     generateParametersSetBlock(queryMethod.queryParameters, "item.")
 
                     addStatement("it.addBatch()")
@@ -394,7 +402,7 @@ private fun TypeSpecBuilder.generateBatchQueryMethod(queryMethod: QueryMethod) {
                     `if`("rows.sum() != ${queryMethodParameter.name}.size") {
                         addStatement(
                             "throw %M()",
-                            MemberName("kotlite.aux.exception", "OptimisticLockFailException")
+                            MemberName("kotlite.aux.exception", "OptimisticLockFailException"),
                         )
                     }
                 } else {
@@ -407,7 +415,7 @@ private fun TypeSpecBuilder.generateBatchQueryMethod(queryMethod: QueryMethod) {
 
 private fun CodeBlockBuilder.generateParametersSetBlock(
     queryParameters: List<QueryParameter>,
-    itemPrefix: String
+    itemPrefix: String,
 ) {
     for (param in queryParameters) {
         when {
@@ -423,7 +431,7 @@ private fun CodeBlockBuilder.generateParametersSetBlock(
                 "it.setString(%L, $itemPrefix%L%L.name)",
                 param.positionInQuery,
                 param.path,
-                if (param.kotlinType.nullability == Nullability.NULLABLE) "?" else ""
+                if (param.kotlinType.nullability == Nullability.NULLABLE) "?" else "",
             )
 
             param.kotlinType.klass.isJavaPrimitive() && param.kotlinType.nullability == Nullability.NULLABLE ->
@@ -433,7 +441,7 @@ private fun CodeBlockBuilder.generateParametersSetBlock(
                         param.positionInQuery,
                         MemberName("java.sql", "Types"),
                         jdbcTypeMappingsForPrimitives[param.SqliteType]
-                            ?: error("no java.sql.Types mapping for ${param.SqliteType}")
+                            ?: error("no java.sql.Types mapping for ${param.SqliteType}"),
                     )
                 } `else` {
                     addStatement(

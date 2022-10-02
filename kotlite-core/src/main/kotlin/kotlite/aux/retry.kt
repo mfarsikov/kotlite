@@ -1,10 +1,9 @@
 package kotlite.aux
 
-import kotlite.aux.exception.OptimisticLockFailException
 import kotlin.reflect.KClass
+import kotlite.aux.exception.OptimisticLockFailException
 
 fun <R> retry(times: Int = 3, expect: KClass<out Throwable> = OptimisticLockFailException::class, block: () -> R): R {
-
     if (times < 1) throw IllegalArgumentException("'times' should be greater than 0")
 
     var counter = 0
@@ -14,10 +13,11 @@ fun <R> retry(times: Int = 3, expect: KClass<out Throwable> = OptimisticLockFail
         try {
             return block()
         } catch (ex: Exception) {
-            if (expect.isInstance(ex))
+            if (expect.isInstance(ex)) {
                 lastCaughtEx = ex
-            else
+            } else {
                 throw ex
+            }
         }
         counter++
     } while (counter < times)

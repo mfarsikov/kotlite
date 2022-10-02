@@ -17,7 +17,7 @@ enum class KotlinType(val qn: QualifiedName, val jdbcSetterName: String?) {
     DOUBLE(QualifiedName(pkg = "kotlin", name = "Double"), "Double"),
     FLOAT(QualifiedName(pkg = "kotlin", name = "Float"), "Float"),
 
-    //INSTANT(QualifiedName(pkg = "java.time", name = "Instant"), "Object"),
+    // INSTANT(QualifiedName(pkg = "java.time", name = "Instant"), "Object"),
     INT(QualifiedName(pkg = "kotlin", name = "Int"), "Int"),
     LIST(QualifiedName(pkg = "kotlin.collections", name = "List"), "Object"),
     LONG(QualifiedName(pkg = "kotlin", name = "Long"), "Long"),
@@ -37,7 +37,7 @@ enum class KotlinType(val qn: QualifiedName, val jdbcSetterName: String?) {
             return values().singleOrNull { it.qn == qualifiedName } ?: synonyms[qualifiedName]
         }
 
-        //TODO fill
+        // TODO fill
         private val synonyms: Map<QualifiedName, KotlinType> = mapOf(
             QualifiedName(pkg = "", name = "int") to INT,
             QualifiedName(pkg = "", name = "long") to LONG,
@@ -52,6 +52,6 @@ enum class KotlinType(val qn: QualifiedName, val jdbcSetterName: String?) {
             QualifiedName(pkg = "java.lang", name = "String") to STRING,
             QualifiedName(pkg = "java.util", name = "List") to LIST,
 
-            )
+        )
     }
 }

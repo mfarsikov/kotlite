@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test
 class OrderTest {
     @Test
     fun happy() {
-
         all(
             { assert(Order(emptyList()).stringify() == "") },
             { assert(Order(listOf(SortCol("x"))).stringify() == "ORDER BY x") },
@@ -17,9 +16,9 @@ class OrderTest {
                         SortCol(
                             "x",
                             SortOrder.DESC,
-                            NullsOrder.NULLS_FIRST
-                        )
-                    )
+                            NullsOrder.NULLS_FIRST,
+                        ),
+                    ),
                 )
                 assert(order1.stringify() == "ORDER BY x DESC NULLS FIRST")
             },
@@ -28,7 +27,7 @@ class OrderTest {
                     listOf(
                         SortCol("x", SortOrder.DESC, NullsOrder.NULLS_FIRST),
                         SortCol("y", SortOrder.DESC, NullsOrder.NULLS_FIRST),
-                    )
+                    ),
                 )
                 assert(order2.stringify() == "ORDER BY x DESC NULLS FIRST, y DESC NULLS FIRST")
             },

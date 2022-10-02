@@ -3,7 +3,7 @@ package kotlite
 import kotlin.reflect.full.isSubclassOf
 import kotlin.test.fail
 
-inline fun <reified E : Throwable> expect(block: () -> Any?):E {
+inline fun <reified E : Throwable> expect(block: () -> Any?): E {
     try {
         val r = block()
         fail("Expected ${E::class.qualifiedName}, but nothing was thrown, and returned: $r")
@@ -16,7 +16,6 @@ inline fun <reified E : Throwable> expect(block: () -> Any?):E {
 }
 
 fun all(vararg r: () -> Unit) {
-
     val exs = r.mapNotNull {
         try {
             it()
@@ -25,6 +24,7 @@ fun all(vararg r: () -> Unit) {
             ex.message
         }
     }
-    if (exs.isNotEmpty())
+    if (exs.isNotEmpty()) {
         throw AssertionError(exs.joinToString(separator = "\n\n"))
+    }
 }

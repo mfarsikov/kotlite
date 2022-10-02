@@ -22,30 +22,29 @@ import kotlite.ksp.sqlite.repository.Repo
 
 fun generateDb(dbDescription: DbDescription): FileSpec {
     return buildFile(dbDescription.pkg, dbDescription.name + ".kt") {
-
         addClass(dbDescription.name) {
             addAnnotation(Generated::class)
             if (dbDescription.spring) {
                 addAnnotation(ClassName("org.springframework.stereotype", "Component"))
             }
             primaryConstructor(
-                PropertySpec.builder("ds", ClassName("javax.sql", "DataSource"), KModifier.PRIVATE).build()
+                PropertySpec.builder("ds", ClassName("javax.sql", "DataSource"), KModifier.PRIVATE).build(),
             )
             addFunction("transaction") {
-
                 val repoHolder = ClassName(dbDescription.pkg, "${dbDescription.name}RepositoryHolder")
                 ClassName.bestGuess(IsolationLevel::class.qualifiedName!!)
                 val readCommitted =
                     MemberName(ClassName.bestGuess(IsolationLevel::class.qualifiedName!!), "READ_UNCOMMITTED")
                 addParameter(
                     ParameterSpec.builder("isolationLevel", IsolationLevel::class).defaultValue("%M", readCommitted)
-                        .build()
+                        .build(),
                 )
                 addParameter(
-                    "block", LambdaTypeName.get(
+                    "block",
+                    LambdaTypeName.get(
                         receiver = repoHolder,
-                        returnType = TypeVariableName("R")
-                    )
+                        returnType = TypeVariableName("R"),
+                    ),
                 )
                 addTypeVariable(TypeVariableName("R"))
                 returns(TypeVariableName("R"))
@@ -67,29 +66,27 @@ fun generateDb(dbDescription: DbDescription): FileSpec {
                     }
                 }
             }
-
         }
 
         addClass("${dbDescription.name}RepositoryHolder") {
             addAnnotation(Generated::class)
             primaryConstructor(
-                PropertySpec.builder("connection", ClassName("java.sql", "Connection"), KModifier.OVERRIDE).build()
+                PropertySpec.builder("connection", ClassName("java.sql", "Connection"), KModifier.OVERRIDE).build(),
             )
             addSuperinterface(DbOperations::class, codeBlock("%T(connection)", DbOperationsImpl::class))
             dbDescription.repositories.forEach { repo ->
                 addProperty(
                     PropertySpec.builder(
                         repo.superKlass.name.name.replaceFirstChar { it.lowercase() },
-                        ClassName(repo.superKlass.name.pkg, repo.superKlass.name.name)
+                        ClassName(repo.superKlass.name.pkg, repo.superKlass.name.name),
                     )
                         .initializer(
                             "%T(connection)",
-                            ClassName(repo.superKlass.name.pkg, repo.superKlass.name.name + "Impl")
+                            ClassName(repo.superKlass.name.pkg, repo.superKlass.name.name + "Impl"),
                         )
-                        .build()
+                        .build(),
                 )
             }
-
         }
     }
 }

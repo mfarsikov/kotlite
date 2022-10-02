@@ -20,7 +20,7 @@ data class QueryMethod(
     val query: String,
     val queryMethodParameters: List<QueryMethodParameter>,
     val queryParameters: List<QueryParameter>,
-    val returnType: Type, //TODO remove?
+    val returnType: Type, // TODO remove?
     val trueReturnType: Type,
     val returnsCollection: Boolean,
     val objectConstructor: ObjectConstructor?,
@@ -58,10 +58,10 @@ sealed class ObjectConstructor {
     ) : ObjectConstructor()
 
     data class Extractor(
-        val resultSetGetterName: String, //TODO remove in favor of kotlinType?
+        val resultSetGetterName: String, // TODO remove in favor of kotlinType?
         val columnName: String,
         val fieldName: String?,
-        val fieldType: QualifiedName, //TODO remove in favor of kotlinType?
+        val fieldType: QualifiedName, // TODO remove in favor of kotlinType?
         val isJson: Boolean,
         val isEnum: Boolean,
         val isPrimitive: Boolean,

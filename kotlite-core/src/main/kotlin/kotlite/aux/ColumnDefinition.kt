@@ -6,6 +6,6 @@ data class ColumnDefinition(
     val type: SqliteType,
     val isId: Boolean,
     val isVersion: Boolean = false,
-){
-    override fun toString() = "$name ${type}${if (!nullable) " not null" else "" }"
+) {
+    override fun toString() = "$name ${type}${if (!nullable) " not null" else ""}"
 }

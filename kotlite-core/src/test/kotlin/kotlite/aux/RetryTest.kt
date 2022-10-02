@@ -5,7 +5,6 @@ import kotlite.aux.exception.OptimisticLockFailException
 import kotlite.expect
 import org.junit.jupiter.api.Test
 
-
 internal class RetryTest {
     @Test
     fun `test retry`() {

@@ -31,14 +31,14 @@ import kotlite.ksp.model.klass.Nullability
 import kotlite.ksp.model.klass.QualifiedName
 import kotlite.ksp.model.klass.Type
 import kotlite.ksp.model.klass.primitives
+import kotlite.ksp.parser.KotlinType
+import kotlite.ksp.parser.toQualifiedName
 import kotlite.ksp.sqlite.repository.ObjectConstructor
 import kotlite.ksp.sqlite.repository.QueryMethod
 import kotlite.ksp.sqlite.repository.QueryMethodParameter
 import kotlite.ksp.sqlite.repository.QueryMethodType
 import kotlite.ksp.sqlite.repository.QueryParameter
 import kotlite.ksp.sqlite.repository.Repo
-import kotlite.ksp.parser.KotlinType
-import kotlite.ksp.parser.toQualifiedName
 
 // ex: `:firstName`
 val parameterPlaceholderRegex = Regex(":\\w*")
@@ -83,7 +83,7 @@ private fun objectConstructor(
     klass: Klass,
     columns: List<ColumnMapping>,
     parentField: String? = null,
-    path: List<String> = emptyList()
+    path: List<String> = emptyList(),
 ): ObjectConstructor {
     return when {
         klass.fields.isEmpty() -> {
@@ -99,7 +99,7 @@ private fun objectConstructor(
                 isEnum = column.type.klass.isEnum,
                 isPrimitive = column.type.klass.name in primitives,
                 isNullable = column.type.nullability == Nullability.NULLABLE,
-                kotlinType = KotlinType.of(column.type.klass.name)
+                kotlinType = KotlinType.of(column.type.klass.name),
             )
         }
 
@@ -112,9 +112,9 @@ private fun objectConstructor(
                         it.type.klass,
                         columns,
                         it.name,
-                        path + it.name
+                        path + it.name,
                     )
-                }
+                },
             )
         }
     }
@@ -137,44 +137,43 @@ fun Klass.toRepo(dbQualifiedName: QualifiedName): Repo {
         belongsToDb = annotations.single { it.name == SqliteRepository::class.qualifiedName }
             .parameters["belongsToDb"]
             ?.takeIf { it.isNotEmpty() }
-            ?.toQualifiedName() //TODO looks like it is wrong in KSP
-            ?: dbQualifiedName
+            ?.toQualifiedName() // TODO looks like it is wrong in KSP
+            ?: dbQualifiedName,
     )
 }
 
 private fun toQueryMethods(functions: List<KlassFunction>, mappedKlass: TableMapping?): List<QueryMethod> {
-
     val (custom, dedicated) = functions.partition { isCustomQueryMethod(it) }
     val (saves, notSave) = dedicated.partition { isSaveMethod(it) }
     val (deletes, queries) = notSave.partition { isDeleteMethod(it) }
 
-    if (dedicated.isNotEmpty() && mappedKlass == null)
+    if (dedicated.isNotEmpty() && mappedKlass == null) {
         throw KotliteException("Only method with custom @Queries are allowed in standalone repositories")
+    }
 
     return queries.map { it.toQueryMethod(mappedKlass!!) } +
-            custom.map { it.toCustomQueryMethod() } +
-            saves.map { it.toSaveMethod(mappedKlass!!) } +
-            deletes.map { it.toDeleteMethod(mappedKlass!!) }
+        custom.map { it.toCustomQueryMethod() } +
+        saves.map { it.toSaveMethod(mappedKlass!!) } +
+        deletes.map { it.toDeleteMethod(mappedKlass!!) }
 }
 
 private fun isCustomQueryMethod(it: KlassFunction) =
     it.annotationConfigs.any {
         it.name == Query::class.qualifiedName && !it.parameters["value"].isNullOrEmpty() ||
-                it.name == Statement::class.qualifiedName
+            it.name == Statement::class.qualifiedName
     }
 
 private fun isDeleteMethod(it: KlassFunction) = it.annotationConfigs
     .any { it.name == Delete::class.qualifiedName } ||
-        it.name.startsWith("delete") &&
-        it.annotationConfigs.none { it.name == Query::class.qualifiedName || it.name == Save::class.qualifiedName }
+    it.name.startsWith("delete") &&
+    it.annotationConfigs.none { it.name == Query::class.qualifiedName || it.name == Save::class.qualifiedName }
 
 private fun isSaveMethod(it: KlassFunction) = it.annotationConfigs.any { it.name == Save::class.qualifiedName } ||
-        it.name.startsWith("save") &&
-        it.annotationConfigs.none { it.name == Query::class.qualifiedName || it.name == Delete::class.qualifiedName }
+    it.name.startsWith("save") &&
+    it.annotationConfigs.none { it.name == Query::class.qualifiedName || it.name == Delete::class.qualifiedName }
 
 private fun KlassFunction.toDeleteMethod(repoMappedKlass: TableMapping): QueryMethod {
-
-    //TODO check no Limit no pageable
+    // TODO check no Limit no pageable
 
     val entityParamter = parameters.size == 1 && parameters.first().type.klass == repoMappedKlass.klass
     val customWhere = annotationConfigs.any { it.name == Where::class.qualifiedName }
@@ -187,7 +186,7 @@ private fun KlassFunction.toDeleteMethod(repoMappedKlass: TableMapping): QueryMe
     val deleteClause = """
                 DELETE 
                 FROM ${repoMappedKlass.name}
-            """.trimIndent()
+    """.trimIndent()
 
     val queryMethodParameters = parameters.map { QueryMethodParameter(it.name, it.type) }
 
@@ -206,12 +205,11 @@ private fun KlassFunction.toDeleteMethod(repoMappedKlass: TableMapping): QueryMe
 }
 
 private fun KlassFunction.toCustomQueryMethod(): QueryMethod {
-
     val paginationParameter = paginationParameter()
 
     val parameters = parameters.filter { it.type.klass.name != pageableQualifiedName }
 
-    //TODO check statement returns UNIT
+    // TODO check statement returns UNIT
     var query = when {
         annotationConfigs.any { it.name == Query::class.qualifiedName } -> (annotationConfigs.single { it.name == Query::class.qualifiedName }).parameters["value"]!!
         annotationConfigs.any { it.name == Statement::class.qualifiedName } -> (annotationConfigs.single { it.name == Statement::class.qualifiedName }).parameters["value"]!!
@@ -247,10 +245,10 @@ private fun KlassFunction.toCustomQueryMethod(): QueryMethod {
         isScalar -> {
             ObjectConstructor.Extractor(
                 resultSetGetterName = if (trueReturnType.klass.isEnum) "String" else kotlinType!!.jdbcSetterName!!,
-                columnName = "N/A",//TODO introduce another class?
+                columnName = "N/A", // TODO introduce another class?
                 fieldName = null,
                 fieldType = if (trueReturnType.klass.isEnum) trueReturnType.klass.name else kotlinType!!.qn,
-                isJson = false,//TODO
+                isJson = false, // TODO
                 isEnum = trueReturnType.klass.isEnum,
                 isPrimitive = trueReturnType.klass.name in primitives,
                 isNullable = trueReturnType.nullability == Nullability.NULLABLE,
@@ -317,11 +315,9 @@ private fun KlassFunction.toCustomQueryMethod(): QueryMethod {
             )
         }
 
-
     val paginationQueryParameters = paginationParameter
         ?.let { paginationQueryParameters(it, queryParameters.size) }
         ?: emptyList()
-
 
     query = query.replace(parameterPlaceholderRegex, "?")
     if (limitClause != null) {
@@ -345,7 +341,6 @@ private fun KlassFunction.toCustomQueryMethod(): QueryMethod {
 }
 
 private fun KlassFunction.toQueryMethod(repoMappedKlass: TableMapping): QueryMethod {
-
     val paginationParameter = paginationParameter()
 
     val orderQualifiedName = QualifiedName("kotlite.aux.sort", "Order")
@@ -355,8 +350,8 @@ private fun KlassFunction.toQueryMethod(repoMappedKlass: TableMapping): QueryMet
 
     val parameters = parameters.filter {
         it.type.klass.name != pageableQualifiedName &&
-                it.type.klass.name != orderQualifiedName &&
-                it.annotations.none { it.name == Limit::class.qualifiedName }
+            it.type.klass.name != orderQualifiedName &&
+            it.annotations.none { it.name == Limit::class.qualifiedName }
     }
 
     val returnsCollection = returnType.klass.name == QualifiedName("kotlin.collections", "List")
@@ -394,7 +389,7 @@ private fun KlassFunction.toQueryMethod(repoMappedKlass: TableMapping): QueryMet
                 SELECT count(*) 
                 FROM ${repoMappedKlass.name}
                 %where
-            """.trimIndent()
+        """.trimIndent()
 
         isExists -> """
                 SELECT EXISTS (
@@ -402,13 +397,13 @@ private fun KlassFunction.toQueryMethod(repoMappedKlass: TableMapping): QueryMet
                     FROM ${repoMappedKlass.name} 
                     %where
                 )
-            """.trimIndent()
+        """.trimIndent()
 
         else -> """
                 SELECT ${returnKlassTableMapping!!.columns.joinToString { "\"${it.column.name}\"" }}
                 FROM ${repoMappedKlass.name}
                 %where
-            """.trimIndent()
+        """.trimIndent()
     }
 
     val orderByAnnotation = annotationConfigs.singleOrNull { it.name == OrderBy::class.qualifiedName }
@@ -432,9 +427,9 @@ private fun KlassFunction.toQueryMethod(repoMappedKlass: TableMapping): QueryMet
                     path = limitParameter.name,
                     isJson = false,
                     isEnum = false,
-                    isINClause = false,//TODO
-                    SqliteType.INTEGER
-                )
+                    isINClause = false, // TODO
+                    SqliteType.INTEGER,
+                ),
             )
 
             else -> emptyList()
@@ -452,7 +447,7 @@ private fun KlassFunction.toQueryMethod(repoMappedKlass: TableMapping): QueryMet
                 isEnum = false,
                 isPrimitive = true,
                 isNullable = trueReturnType.nullability == Nullability.NULLABLE,
-                kotlinType = kotlinType
+                kotlinType = kotlinType,
             )
         }
 
@@ -483,11 +478,9 @@ private fun generateWhere(
     parameters: List<FunctionParameter>,
     repoMappedKlass: TableMapping,
 ): Pair<String?, List<QueryParameter>> {
-
     val columnsByFieldName = repoMappedKlass.columns.associateBy { it.path.last() }
 
-
-    //todo check parameter types with column types
+    // todo check parameter types with column types
 
     fun toCondition(parameter: FunctionParameter): Condition {
         val exactColumn = columnsByFieldName[parameter.name] ?: error("No such column: ${parameter.name}")
@@ -500,7 +493,7 @@ private fun generateWhere(
             )
 
             parameter.type.klass.name == KotlinType.LIST.qn &&
-                    parameter.type.typeParameters.single().klass.name == exactColumn.type.klass.name -> Condition(
+                parameter.type.typeParameters.single().klass.name == exactColumn.type.klass.name -> Condition(
                 exactColumn.column.name,
                 false,
                 Op.IN,
@@ -526,14 +519,14 @@ private fun generateWhere(
         ?.let {
             """
                 WHERE ${
-                it.joinToString(" AND ") {
-                    when {
-                        it.op == Op.EQ && !it.nullable -> "\"${it.columnName}\" = ?"
-                        it.op == Op.EQ && it.nullable -> "\"${it.columnName}\" IS ?"
-                        it.op == Op.IN -> "\"${it.columnName}\" IN (%${it.parameterName})"
-                        else -> error("")
-                    }
+            it.joinToString(" AND ") {
+                when {
+                    it.op == Op.EQ && !it.nullable -> "\"${it.columnName}\" = ?"
+                    it.op == Op.EQ && it.nullable -> "\"${it.columnName}\" IS ?"
+                    it.op == Op.IN -> "\"${it.columnName}\" IN (%${it.parameterName})"
+                    else -> error("")
                 }
+            }
             }
             """.trimIndent()
         }
@@ -546,7 +539,8 @@ private fun generateWhere(
         columnsByFieldName[it.name]
             ?: error(
                 "cannot find field '${it.name}', among: ${columnsByFieldName.keys}, in class: ${repoMappedKlass.klass.name}, " +
-                        "function: ?"//TODO
+                    "function: ?",
+                // TODO
             )
     }
 
@@ -569,7 +563,8 @@ private fun generateWhere(
         columnsByFieldName[it.name]
             ?: error(
                 "cannot find field '${it.name}', among: ${columnsByFieldName.keys}, in class: ${repoMappedKlass.klass.name}, " +
-                        "function: ?"//TODO
+                    "function: ?",
+                // TODO
             )
     }
 
@@ -586,17 +581,13 @@ private fun generateWhere(
         )
     }
 
-
-
     return whereClause to (queryParameters + inClauseQueryParameters)
 }
-
 
 private fun generateWhere2(
     parameters: List<FunctionParameter>,
     repoMappedKlass: TableMapping,
 ): Pair<String?, List<QueryParameter>> {
-
     val param = parameters.single()
 
     val whereColumns = if (repoMappedKlass.columns.any { it.column.isId }) {
@@ -618,13 +609,13 @@ private fun generateWhere2(
         ?.let {
             """
                 WHERE ${
-                it.joinToString(" AND ") {
-                    when {
-                        it.op == Op.EQ && !it.nullable -> "\"${it.columnName}\" = ?"
-                        it.op == Op.EQ && it.nullable -> "\"${it.columnName}\" IS ?"
-                        else -> error("")
-                    }
+            it.joinToString(" AND ") {
+                when {
+                    it.op == Op.EQ && !it.nullable -> "\"${it.columnName}\" = ?"
+                    it.op == Op.EQ && it.nullable -> "\"${it.columnName}\" IS ?"
+                    else -> error("")
                 }
+            }
             }
             """.trimIndent()
         }
@@ -644,12 +635,11 @@ private fun generateWhere2(
     return whereClause to queryParameters
 }
 
-
 private fun generateWhere(
     parameters: List<FunctionParameter>,
-    where: AAnnotation
+    where: AAnnotation,
 ): Pair<String?, List<QueryParameter>> {
-    //TODO check projection has same fields as mapped class
+    // TODO check projection has same fields as mapped class
     val parametersByName = parameters.associateBy { it.name }
 
     validateParameters(where.parameters["value"]!!, parameters, parametersByName)
@@ -661,7 +651,7 @@ private fun generateWhere(
     whereClause = inClauseParamNames.fold(whereClause) { clause, paramName ->
         clause.replace(
             ":$paramName",
-            "%$paramName"
+            "%$paramName",
         )
     }
 
@@ -726,7 +716,7 @@ private fun generateWhere(
 private fun validateParameters(
     whereClause: String,
     parameters: List<FunctionParameter>,
-    parametersByName: Map<String, FunctionParameter>
+    parametersByName: Map<String, FunctionParameter>,
 ) {
     val paramsOrdered = parameterPlaceholderRegex
         .findAll(whereClause)
@@ -749,7 +739,6 @@ data class Condition(
 enum class Op { EQ, IN }
 
 private fun KlassFunction.toSaveMethod(mappedKlass: TableMapping): QueryMethod {
-
     val versionColumnName = mappedKlass.columns.find { it.column.isVersion }?.column?.name
 
     val param = parameters.singleOrNull()
@@ -759,7 +748,7 @@ private fun KlassFunction.toSaveMethod(mappedKlass: TableMapping): QueryMethod {
         INSERT INTO ${mappedKlass.name}
         (${mappedKlass.columns.joinToString { "\"${it.column.name}\"" }})
         VALUES (${mappedKlass.columns.joinToString { if (it.column.isVersion) "? + 1" else "?" }})
-        """.trimIndent()
+    """.trimIndent()
 
     val onConflict = if (
         mappedKlass.columns.any { it.column.isId } &&
@@ -769,9 +758,9 @@ private fun KlassFunction.toSaveMethod(mappedKlass: TableMapping): QueryMethod {
         
         ON CONFLICT (${mappedKlass.columns.filter { it.column.isId }.joinToString { it.column.name }}) DO 
         UPDATE SET ${
-            mappedKlass.columns.joinToString {
-                """"${it.column.name}" = EXCLUDED."${it.column.name}""""
-            }
+        mappedKlass.columns.joinToString {
+            """"${it.column.name}" = EXCLUDED."${it.column.name}""""
+        }
         }
         ${versionColumnName?.let { "WHERE ${mappedKlass.name}.$it = EXCLUDED.$it - 1" } ?: ""}
         """.trimIndent()
@@ -780,7 +769,6 @@ private fun KlassFunction.toSaveMethod(mappedKlass: TableMapping): QueryMethod {
     }
 
     val query = insert + onConflict
-
 
     val queryType = if (KotlinType.of(param.type.klass.name) == KotlinType.LIST) {
         QueryMethodType.BATCH
@@ -833,7 +821,8 @@ private fun flattenToColumns(klass: Klass, path: List<String> = emptyList()): Li
             }
 
             colType != null -> {
-                val colName = columnAnnotation?.parameters?.get("name")?.takeIf { it.isNotEmpty() } ?: field.name.camelToSnakeCase()
+                val colName = columnAnnotation?.parameters?.get("name")?.takeIf { it.isNotEmpty() }
+                    ?: field.name.camelToSnakeCase()
                 listOf(
                     ColumnMapping(
                         path = path + field.name,
@@ -845,7 +834,7 @@ private fun flattenToColumns(klass: Klass, path: List<String> = emptyList()): Li
                             isVersion = field.annotations.any { it.name == Version::class.qualifiedName },
                         ),
                         type = field.type,
-                    )
+                    ),
                 )
             }
 
@@ -856,7 +845,7 @@ private fun flattenToColumns(klass: Klass, path: List<String> = emptyList()): Li
 
 private fun extractSqliteType(
     columnAnnotation: AAnnotation?,
-    field: Field
+    field: Field,
 ): SqliteType? {
     val type = columnAnnotation?.parameters?.get("type")?.let { SqliteType.of(it) } ?: SqliteType.NONE
     if (type != SqliteType.NONE) {
@@ -882,7 +871,7 @@ fun paginationQueryParameters(pagination: Pagination, otherQueryParametersSize: 
             isJson = false,
             isEnum = false,
             isINClause = false,
-            SqliteType = SqliteType.INTEGER
+            SqliteType = SqliteType.INTEGER,
         ),
         QueryParameter(
             path = pagination.parameterName + ".offset",
@@ -892,7 +881,7 @@ fun paginationQueryParameters(pagination: Pagination, otherQueryParametersSize: 
             isJson = false,
             isEnum = false,
             isINClause = false,
-            SqliteType = SqliteType.INTEGER
-        )
+            SqliteType = SqliteType.INTEGER,
+        ),
     )
 }

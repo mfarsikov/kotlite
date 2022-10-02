@@ -1,8 +1,7 @@
 package kotlite.aux
 
-
 enum class SqliteType(
-    val value: String
+    val value: String,
 ) {
     NONE(""),
     BOOLEAN("boolean"),
@@ -15,7 +14,7 @@ enum class SqliteType(
     DATE("date"),
     DOUBLE("double precision"),
     MONEY("money"),
-    NUMERIC("numeric"), //TODO has params
+    NUMERIC("numeric"), // TODO has params
     TIME("time without time zone"),
     TIMESTAMP("timestamp without time zone"),
     TIMESTAMP_WITH_TIMEZONE("timestamp with time zone"),
@@ -28,7 +27,7 @@ enum class SqliteType(
         fun of(s: String): SqliteType {
             val name = if (s.startsWith(SqliteType::class.qualifiedName!!)) {
                 s.substringAfterLast(".")
-            }else{
+            } else {
                 s
             }
 

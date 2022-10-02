@@ -28,8 +28,7 @@ import kotlite.ksp.model.klass.QualifiedName
 import kotlite.ksp.model.klass.Type
 import kotlite.ksp.parser.KotlinType
 
-class KotliteSymbolVisitor(val logger: KSPLogger) : KSDefaultVisitor<Unit, Node?>(
-) {
+class KotliteSymbolVisitor(val logger: KSPLogger) : KSDefaultVisitor<Unit, Node?>() {
     val cache = mutableMapOf<QualifiedName, Klass>()
 
     override fun visitClassDeclaration(classDeclaration: KSClassDeclaration, data: Unit): Node {
@@ -37,7 +36,7 @@ class KotliteSymbolVisitor(val logger: KSPLogger) : KSDefaultVisitor<Unit, Node?
         println("Parsing class: ${classDeclaration.qualifiedName!!.asString()}")
         val qualifiedName = QualifiedName(
             pkg = classDeclaration.qualifiedName?.getQualifier() ?: "",
-            name = classDeclaration.qualifiedName?.getShortName()!!
+            name = classDeclaration.qualifiedName?.getShortName()!!,
         )
 
         val cached = cache[qualifiedName]
@@ -59,9 +58,9 @@ class KotliteSymbolVisitor(val logger: KSPLogger) : KSDefaultVisitor<Unit, Node?
 
         cls.superclassParameter =
             classDeclaration.superTypes.firstOrNull()?.element?.typeArguments?.firstOrNull()?.type?.accept(
-                this,
-                data
-            ) as Type?
+            this,
+            data,
+        ) as Type?
         cls.fields = classDeclaration.getDeclaredProperties().toList().map { it.accept(this, data) as Field }
         cls.annotations = classDeclaration.annotations.toList().map { it.accept(this, data) as AAnnotation }
         cls.functions =
@@ -69,7 +68,6 @@ class KotliteSymbolVisitor(val logger: KSPLogger) : KSDefaultVisitor<Unit, Node?
 
         logger.info("Parsed class: $qualifiedName")
         return cls
-
     }
 
     override fun visitPropertyDeclaration(property: KSPropertyDeclaration, data: Unit): Node {
@@ -79,11 +77,11 @@ class KotliteSymbolVisitor(val logger: KSPLogger) : KSDefaultVisitor<Unit, Node?
             name = property.qualifiedName?.getShortName()!!,
             type = Type(
                 klass = resolve.declaration.accept(this, data) as Klass,
-                nullability = n(resolve)
+                nullability = n(resolve),
             ).also {
                 logger.info("Parsed field: $it")
             },
-            annotations = property.annotations.toList().map { it.accept(this, data) as AAnnotation }
+            annotations = property.annotations.toList().map { it.accept(this, data) as AAnnotation },
         )
     }
 
@@ -96,7 +94,6 @@ class KotliteSymbolVisitor(val logger: KSPLogger) : KSDefaultVisitor<Unit, Node?
     }
 
     override fun visitFunctionDeclaration(function: KSFunctionDeclaration, data: Unit): KlassFunction? {
-
         if (function.isConstructor()) return null
         logger.info("Parsed function: ${function.simpleName.asString()}")
 
@@ -118,7 +115,7 @@ class KotliteSymbolVisitor(val logger: KSPLogger) : KSDefaultVisitor<Unit, Node?
         return Type(
             klass = resolve.declaration.accept(this, data) as Klass,
             nullability = n(resolve),
-            typeParameters = typeReference.element?.typeArguments?.map { it.accept(this, data) as Type } ?: emptyList()
+            typeParameters = typeReference.element?.typeArguments?.map { it.accept(this, data) as Type } ?: emptyList(),
         ).also {
             logger.info("Parsed typeRef: $it")
         }
@@ -128,7 +125,7 @@ class KotliteSymbolVisitor(val logger: KSPLogger) : KSDefaultVisitor<Unit, Node?
         logger.info("Parsed annotation: ${annotation.shortName}")
         return AAnnotation(
             name = annotation.annotationType.resolve().declaration.qualifiedName!!.asString(),
-            parameters = annotation.arguments.associate { (it.name?.getShortName() ?: "value") to it.value.toString() }
+            parameters = annotation.arguments.associate { (it.name?.getShortName() ?: "value") to it.value.toString() },
         ).also {
             logger.info("Parsed Annotation: $it")
         }
@@ -139,9 +136,8 @@ class KotliteSymbolVisitor(val logger: KSPLogger) : KSDefaultVisitor<Unit, Node?
         return null
     }
 
-
     override fun visitTypeArgument(typeArgument: KSTypeArgument, data: Unit): Node? {
-        logger.info("Parsing typeArgument: ${typeArgument.type?.resolve().toString()}")
+        logger.info("Parsing typeArgument: ${typeArgument.type?.resolve()}")
         return Type(
             klass = typeArgument.type?.resolve()?.declaration?.accept(this, data) as Klass,
             nullability = n(typeArgument.type!!.resolve()),
@@ -162,8 +158,8 @@ class KotliteSymbolVisitor(val logger: KSPLogger) : KSDefaultVisitor<Unit, Node?
         return FunctionParameter(
             name = valueParameter.name!!.asString(),
             type = valueParameter.type.accept(this, data) as Type,
-            isTarget = false, //TODO
-            annotations = valueParameter.annotations.map { it.accept(this, data) as AAnnotation }.toList()
+            isTarget = false, // TODO
+            annotations = valueParameter.annotations.map { it.accept(this, data) as AAnnotation }.toList(),
         )
     }
 
@@ -172,4 +168,3 @@ class KotliteSymbolVisitor(val logger: KSPLogger) : KSDefaultVisitor<Unit, Node?
         return null
     }
 }
-

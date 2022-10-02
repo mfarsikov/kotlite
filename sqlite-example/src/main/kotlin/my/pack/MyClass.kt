@@ -1,5 +1,11 @@
 package my.pack
 
+import java.sql.Date
+import java.sql.Timestamp
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.util.UUID
 import kotlite.annotations.Column
 import kotlite.annotations.First
 import kotlite.annotations.Id
@@ -10,18 +16,11 @@ import kotlite.annotations.Query
 import kotlite.annotations.SqliteRepository
 import kotlite.annotations.Statement
 import kotlite.annotations.Where
-import kotlite.aux.SqliteType
 import kotlite.aux.Repository
+import kotlite.aux.SqliteType
 import kotlite.aux.page.Page
 import kotlite.aux.page.Pageable
 import kotlite.aux.sort.Order
-import java.sql.Date
-import java.sql.Timestamp
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
-import java.util.*
-
 
 data class MyClass(
     @Id

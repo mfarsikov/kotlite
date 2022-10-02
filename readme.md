@@ -13,6 +13,7 @@ Generates inspectable SQL queries before compile time rather than in runtime.
 ## Quick start
 
 #### Gradle
+
 ```kotlin
 plugins {
     id("com.google.devtools.ksp") version "1.7.10-1.0.6"
@@ -39,6 +40,7 @@ ksp {
 ```
 
 #### Create entities and declare repositories
+
 ```kotlin
 import kotlite.annotations.Id
 import kotlite.annotations.SqliteRepository
@@ -58,12 +60,13 @@ interface PersonRepository : Repository<Person> {
 }
 
 ```
+
 #### Generate the code
+
 `./gradlew kspKotlin` generates in the folder `build/generated/ksp/main` two classes:
 `PersonRepositoryImpl` and `DB`
 <details>
 <summary>Generated code</summary>
-
 
 ```kotlin
 
@@ -112,9 +115,11 @@ internal class PersonRepositoryImpl(
   }
 }
 ```
+
 </details>
 
 #### Usage
+
 ```kotlin
 val db = DB(dataSource) // create DB access object
 
@@ -134,6 +139,7 @@ val bornToday = db.transaction(readOnly = true) {
 }
 
 ```
+
 ## Synopsis
 
 * Maps Kotlin classes to Sqlite tables
@@ -168,17 +174,20 @@ Unlike popular ORM:
 * No transaction managers
 
 ## Rationale
+
 The intention was to make database interactions (queries and transactions) explicit.
-Generate boiler plate code (like trivial queries, and result mappings). 
+Generate boiler plate code (like trivial queries, and result mappings).
 Give ability to write complex queries, and map their results automatically.
 Use full power of Sqlite.
 
 Avoid accidental complexity
 
 ## Documentation
+
 https://mfarsikov.github.io/kotlite/
 
 ## Example
+
 See `example` project
 
 `./gradlew sqlite-example:kspKotlin` generates database classes in `example/build/generated/ksp/main`

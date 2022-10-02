@@ -26,7 +26,7 @@ class KotliteSymbolProcessor(
             .toList()
             .map { it.accept(visitor, Unit) as Klass }
 
-        //classes.forEach { logger.info("parsed: $it") }
+        // classes.forEach { logger.info("parsed: $it") }
         visitor.cache[QualifiedName("my.pack", "MyNestedNestedClass")]?.also { logger.info(it.toString()) }
 
         classes.forEach { cls ->
@@ -36,7 +36,7 @@ class KotliteSymbolProcessor(
 
         val repoFiles = repos.map { generateRepository(it) }
 
-        //TODO set dependencies
+        // TODO set dependencies
         repoFiles.forEach { fileSpec ->
             val f = codeGenerator.createNewFile(Dependencies.ALL_FILES, fileSpec.packageName, fileSpec.name)
 
@@ -52,12 +52,12 @@ class KotliteSymbolProcessor(
                     pkg = dbQualifiedName.pkg,
                     name = dbQualifiedName.name,
                     repositories = repos,
-                    spring = false,//TODO
-                )
+                    spring = false, // TODO
+                ),
             )
 
             val file = codeGenerator.createNewFile(
-                Dependencies.ALL_FILES,//TODO
+                Dependencies.ALL_FILES, // TODO
                 dbFile.packageName,
                 dbFile.name,
             )

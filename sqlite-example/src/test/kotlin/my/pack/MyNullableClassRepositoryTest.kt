@@ -1,15 +1,15 @@
 package my.pack
 
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.Test
 import java.sql.Date
 import java.sql.Timestamp
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
-import java.util.*
+import java.util.UUID
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 
 class MyNullableClassRepositoryTest {
 
@@ -27,8 +27,8 @@ class MyNullableClassRepositoryTest {
                 proc = null,
                 myNestedNestedClass = MyNullableNestedNestedClass(
                     capacity = null,
-                    longivity = null
-                )
+                    longivity = null,
+                ),
             ),
             version = null,
             bool = null,
@@ -52,12 +52,11 @@ class MyNullableClassRepositoryTest {
 
     @Test
     fun check() {
-      //  assert(db.check().isEmpty()) TODO
+        //  assert(db.check().isEmpty()) TODO
     }
 
     @Test
     fun rollback() {
-
         db.transaction {
             myNullableClassRepository.save(item)
             rollback()
@@ -83,7 +82,6 @@ class MyNullableClassRepositoryTest {
 
     @Test
     fun save() {
-
         db.transaction {
             myNullableClassRepository.save(item)
         }
@@ -95,12 +93,10 @@ class MyNullableClassRepositoryTest {
 
     @Test
     fun saveAll() {
-
         val items = listOf(item, item.copy(id = "14"))
 
         db.transaction {
             myNullableClassRepository.saveAll(items)
-
         }
 
         val items2 = db.transaction { myNullableClassRepository.findAll() }
@@ -110,7 +106,6 @@ class MyNullableClassRepositoryTest {
 
     @Test
     fun update() {
-
         db.transaction { myNullableClassRepository.save(item) }
         db.transaction { myNullableClassRepository.save(item.copy(name = "item2")) }
 
@@ -139,7 +134,6 @@ class MyNullableClassRepositoryTest {
 
     @Test
     fun `nullable query method returns null if there is no result`() {
-
         val found = db.transaction { myNullableClassRepository.findById(item.id) }
 
         assert(found == null)
@@ -172,12 +166,12 @@ class MyNullableClassRepositoryTest {
         fun `test @Where`(
             capacity: String?,
             v: Int?,
-            date: String?
+            date: String?,
         ) = db.transaction {
             myNullableClassRepository.findByCapacityAndVersion(
                 capacity = capacity,
                 v = v,
-                date = date?.let { Date.valueOf(LocalDate.parse(it)) }
+                date = date?.let { Date.valueOf(LocalDate.parse(it)) },
             )
         }
 
@@ -279,8 +273,8 @@ class MyNullableClassRepositoryTest {
                         item.id,
                         item.date,
                         item.list,
-                        capacity = null
-                    )
+                        capacity = null,
+                    ),
                 )
             },
             { assert(`find by proc`("bionic14") == null) },
@@ -301,8 +295,8 @@ class MyNullableClassRepositoryTest {
                         item.id,
                         item.date,
                         listOf("a", "b", "c"),
-                        capacity = null
-                    )
+                        capacity = null,
+                    ),
                 )
             },
             { assert(`find by proc`("bionic14") == null) },
@@ -323,8 +317,8 @@ class MyNullableClassRepositoryTest {
                         item.id,
                         item.date,
                         item.list,
-                        capacity = null
-                    )
+                        capacity = null,
+                    ),
                 )
             },
             { assert(`find by proc`("bionic14") == null) },
@@ -362,13 +356,13 @@ class MyNullableClassRepositoryTest {
 
     @Test
     fun `custom update`() {
-        //GIVEN
+        // GIVEN
         db.transaction { myNullableClassRepository.save(item.copy(date = Date.valueOf("2020-12-31"))) }
 
-        //WHEN
+        // WHEN
         db.transaction { myNullableClassRepository.update(item.id, null) }
 
-        //THEN
+        // THEN
         val date = db.transaction { myNullableClassRepository.selectDate(item.id) }
 
         assert(date == null)
@@ -376,7 +370,6 @@ class MyNullableClassRepositoryTest {
 
     @Test
     fun `select IN`() {
-
         val items = listOf(item, item.copy(id = "14"))
         db.transaction {
             myNullableClassRepository.saveAll(items)
@@ -410,10 +403,10 @@ class MyNullableClassRepositoryTest {
                             id = item.id,
                             date = item.date,
                             list = item.list,
-                            capacity = null
+                            capacity = null,
                         ),
-                        NullableProjectionOfMyClass(id = "14", date = item.date, list = item.list, capacity = null)
-                    )
+                        NullableProjectionOfMyClass(id = "14", date = item.date, list = item.list, capacity = null),
+                    ),
                 )
             },
             { assert(`id in`(listOf("15")) == emptyList<MyClass>()) },
@@ -439,9 +432,9 @@ class MyNullableClassRepositoryTest {
                             id = item.id,
                             date = Date.valueOf("2010-01-01"),
                             list = item.list,
-                            capacity = null
-                        )
-                    )
+                            capacity = null,
+                        ),
+                    ),
                 )
             },
         )
@@ -469,7 +462,6 @@ class MyNullableClassRepositoryTest {
 
     @Test
     fun `nullable enum as result type`() {
-
         db.transaction { myNullableClassRepository.saveAll(listOf(item, item.copy(id = "14", enum = null))) }
 
         fun enum(id: String): Mode? {
@@ -480,12 +472,10 @@ class MyNullableClassRepositoryTest {
             { assert(enum(item.id) == Mode.OFF) },
             { assert(enum("14") == null) },
         )
-
     }
 
     @Test
     fun `select by nullable enum`() {
-
         db.transaction { myNullableClassRepository.saveAll(listOf(item, item.copy(id = "14", enum = null))) }
 
         fun enum(enum: Mode?): List<MyNullableClass> {
@@ -496,7 +486,6 @@ class MyNullableClassRepositoryTest {
             { assert(enum(null) == listOf(item.copy(id = "14", enum = null))) },
             { assert(enum(Mode.OFF) == listOf(item)) },
         )
-
     }
 
     @Test

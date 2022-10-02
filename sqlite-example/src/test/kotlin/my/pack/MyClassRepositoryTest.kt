@@ -1,5 +1,12 @@
 package my.pack
 
+import java.sql.Date
+import java.sql.Timestamp
+import java.time.Instant
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.util.UUID
 import kotlite.aux.IsolationLevel
 import kotlite.aux.page.Page
 import kotlite.aux.page.Pageable
@@ -10,13 +17,6 @@ import kotlite.aux.sort.SortOrder
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
-import java.sql.Date
-import java.sql.Timestamp
-import java.time.Instant
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
-import java.util.*
 
 class MyClassRepositoryTest {
 
@@ -35,8 +35,8 @@ class MyClassRepositoryTest {
                 proc = "bionic13",
                 myNestedNestedClass = MyNestedNestedClass(
                     capacity = "13wh",
-                    longivity = "13h"
-                )
+                    longivity = "13h",
+                ),
             ),
             version = 13,
             bool = true,
@@ -48,7 +48,7 @@ class MyClassRepositoryTest {
             localDateTime = LocalDateTime.parse("2010-01-01T00:00:00"),
             list = listOf("a", "b", "c"),
             enum = Mode.OFF,
-            nullableInt = null
+            nullableInt = null,
         )
     }
 
@@ -66,7 +66,6 @@ class MyClassRepositoryTest {
 
     @Test
     fun rollback() {
-
         db.transaction {
             myClassRepository.save(item)
             rollback()
@@ -92,7 +91,6 @@ class MyClassRepositoryTest {
 
     @Test
     fun save() {
-
         db.transaction {
             myClassRepository.save(item)
         }
@@ -104,12 +102,10 @@ class MyClassRepositoryTest {
 
     @Test
     fun saveAll() {
-
         val items = listOf(item, item.copy(id = "14"))
 
         db.transaction(isolationLevel = IsolationLevel.SERIALIZABLE) {
             myClassRepository.saveAll(items)
-
         }
 
         val items2 = db.transaction { myClassRepository.findAll() }
@@ -119,7 +115,6 @@ class MyClassRepositoryTest {
 
     @Test
     fun `fail on conflict`() {
-
         db.transaction {
             myClassRepository.saveOrFail(item)
         }
@@ -133,7 +128,6 @@ class MyClassRepositoryTest {
 
     @Test
     fun update() {
-
         db.transaction { myClassRepository.save(item) }
         db.transaction { myClassRepository.save(item.copy(name = "item2")) }
 
@@ -162,7 +156,6 @@ class MyClassRepositoryTest {
 
     @Test
     fun `nullable query method returns null if there is no result`() {
-
         val found = db.transaction { myClassRepository.findById(item.id) }
 
         assert(found == null)
@@ -195,12 +188,12 @@ class MyClassRepositoryTest {
         fun `test @Where`(
             capacity: String,
             v: Int,
-            date: String
+            date: String,
         ) = db.transaction {
             myClassRepository.findByCapacityAndVersion(
                 capacity = capacity,
                 v = v,
-                date = Date.valueOf(LocalDate.parse(date))
+                date = Date.valueOf(LocalDate.parse(date)),
             )
         }
 
@@ -361,13 +354,13 @@ class MyClassRepositoryTest {
 
     @Test
     fun `custom update`() {
-        //GIVEN
+        // GIVEN
         db.transaction { myClassRepository.save(item) }
 
-        //WHEN
+        // WHEN
         db.transaction { myClassRepository.update(item.id, Date.valueOf("2020-12-31")) }
 
-        //THEN
+        // THEN
         val date = db.transaction { myClassRepository.selectDate(item.id) }
 
         assert(date == Date.valueOf("2020-12-31"))
@@ -375,7 +368,6 @@ class MyClassRepositoryTest {
 
     @Test
     fun `select IN`() {
-
         val items = listOf(item, item.copy(id = "14"))
         db.transaction {
             myClassRepository.saveAll(items)
@@ -408,9 +400,10 @@ class MyClassRepositoryTest {
                         ProjectionOfMyClass(
                             id = item.id,
                             date = item.date,
-                            list = item.list
-                        ), ProjectionOfMyClass(id = "14", date = item.date, list = item.list)
-                    )
+                            list = item.list,
+                        ),
+                        ProjectionOfMyClass(id = "14", date = item.date, list = item.list),
+                    ),
                 )
             },
             { assert(`id in`(listOf("15")) == emptyList<MyClass>()) },
@@ -432,8 +425,8 @@ class MyClassRepositoryTest {
             {
                 assert(
                     `dates in`(listOf("2010-01-01", "2010-01-02")) == listOf(
-                        ProjectionOfMyClass(id = item.id, date = item.date, list = item.list)
-                    )
+                        ProjectionOfMyClass(id = item.id, date = item.date, list = item.list),
+                    ),
                 )
             },
         )
@@ -472,7 +465,6 @@ class MyClassRepositoryTest {
 
     @Test
     fun `delete by date`() {
-
         db.transaction { myClassRepository.save(item) }
         db.transaction { myClassRepository.deleteByDate(item.date) }
         val fromDb = db.transaction { myClassRepository.findAll() }
@@ -628,7 +620,6 @@ class MyClassRepositoryTest {
         assert(count == 2)
     }
 
-
     @Test
     fun exists() {
         db.transaction { myClassRepository.save(item) }
@@ -643,7 +634,6 @@ class MyClassRepositoryTest {
 
     @Test
     fun order() {
-
         val items = listOf(
             item,
             item.copy(id = "14", name = "item12"),
@@ -672,18 +662,16 @@ class MyClassRepositoryTest {
                 assert(actual == listOf("item13", "item12", null)) { "order by name desc" }
             },
             {
-
-
                 val actual = select(
                     Order(
                         listOf(
                             SortCol(
                                 "name",
                                 SortOrder.DESC,
-                                NullsOrder.NULLS_FIRST
-                            )
-                        )
-                    )
+                                NullsOrder.NULLS_FIRST,
+                            ),
+                        ),
+                    ),
                 ).map { it.name }
                 assert(actual == listOf(null, "item13", "item12")) { "order by name desc nulls first" }
             },
@@ -709,12 +697,10 @@ class MyClassRepositoryTest {
         val actual = db.transaction { myClassRepository.findAllOrdered() }
 
         assert(actual == expected)
-
     }
 
     @Test
     fun `IN clause in @Where`() {
-
         db.transaction { myClassRepository.save(item) }
 
         val actual = db.transaction { myClassRepository.findProjectionWhere(listOf(item.id, "other id")) }
@@ -723,14 +709,14 @@ class MyClassRepositoryTest {
     }
 
     @Test
-    fun `execute arbitrary statement`(){
-        //GIVEN
+    fun `execute arbitrary statement`() {
+        // GIVEN
         db.transaction { myClassRepository.save(item) }
 
-        //WHEN
-        db.transaction { execute("update my_class set name = 'item22'")}
+        // WHEN
+        db.transaction { execute("update my_class set name = 'item22'") }
 
-        //THEN
+        // THEN
         val updated = db.transaction { myClassRepository.findFirstByName("item22") }
 
         assert(updated != null)

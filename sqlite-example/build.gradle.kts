@@ -30,7 +30,7 @@ dependencies {
     implementation("org.xerial:sqlite-jdbc:3.36.0.3")
     implementation("org.flywaydb:flyway-core:8.5.13")
 
-    //implementation(project(":kotlite-kapt"))
+    // implementation(project(":kotlite-kapt"))
     ksp(project(":kotlite-ksp"))
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")

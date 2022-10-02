@@ -1,10 +1,10 @@
 package my.pack
 
+import java.util.UUID
 import kotlite.annotations.Id
 import kotlite.annotations.SqliteRepository
 import kotlite.annotations.Version
 import kotlite.aux.Repository
-import java.util.*
 
 data class OptimisticallyLockedItem(
     @Id

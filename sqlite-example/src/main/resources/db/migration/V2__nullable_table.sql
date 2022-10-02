@@ -1,5 +1,3 @@
-
-
 create table my_nullable_class
 (
     "id"              text primary key,

@@ -5,5 +5,5 @@ package kotlite.annotations
  */
 @Target(AnnotationTarget.FUNCTION)
 annotation class OrderBy(
-    val value: String
+    val value: String,
 )

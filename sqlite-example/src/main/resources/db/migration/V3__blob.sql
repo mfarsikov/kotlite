@@ -1,3 +1,4 @@
-create table blob(
+create table blob
+(
     byte_array blob not null
 )
